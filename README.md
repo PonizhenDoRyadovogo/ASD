@@ -1,1 +1,1 @@
-# ASD
+Использую Visual Studio 2022, Windows 10
