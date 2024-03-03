@@ -2,8 +2,19 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <assert.h>
 
-int MinIndex(int *arr, const int size)
+struct DataFile
+{
+	int countFiles;
+	std::vector<int> ms;
+	std::vector<int> ip;
+	int level;
+	int countSeparator;
+	std::string originName;
+};
+
+int MinIndex(std::vector<int> arr, const int size)
 {
 	int minIndex, min, f;
 	minIndex = 0;
@@ -43,10 +54,84 @@ bool IsFileContainsSortedArray(const std::string& fileName)
 	return true;
 }
 
-//std::fstream CreateOfstream(const std::string& fileName) {
-//	std::fstream stream(fileName, std::ios::out);
-//	return stream;
-//}
+void OpenStream(std::vector<std::fstream*> &files, std::ios::openmode mode)
+{
+	for (int i = 0; i < files.size(); ++i)
+	{
+		files[i]->open("file" + std::to_string(i) + ".txt", mode);
+	}
+}
+
+void CloseStream(std::vector<std::fstream*> &files)
+{
+	for (int i = 0; i < files.size(); ++i)
+	{
+		files[i]->close();
+	}
+}
+
+void Splitting(DataFile &data, std::ifstream &originFile, std::vector<std::fstream*> &files)
+{
+	data.level = 1;
+	data.countSeparator = 0;
+	originFile.open(data.originName);
+	if (!originFile.is_open())
+		return;
+	for (int i = 0; i <= data.countFiles - 2; ++i)
+	{
+		data.ms.push_back(1);
+		data.ip.push_back(1);
+	}
+	data.ms.push_back(0);
+	data.ip.push_back(0);
+	OpenStream(files, std::ios::out);
+	int actual, next, it = 0;
+	originFile >> actual;
+	while (!originFile.eof())
+	{
+		if (actual != INT_MAX)
+		{
+			*files[it] << actual << " ";
+		}
+		else
+			data.countSeparator += 1;
+		originFile >> next;
+		while (!originFile.eof() && (actual <= next))
+		{
+			actual = next;
+			if (actual != INT_MAX)
+				*files[it] << actual << " ";
+			else
+				data.countSeparator += 1;
+			originFile >> next;
+		}
+		data.ms[it]--;
+		*files[it] << INT_MAX << " ";
+		if (data.ms[it] < data.ms[it + 1])
+			++it;
+		else if (data.ms[it] == 0)
+		{
+			++data.level;
+			int ip0 = data.ip[0];
+			it = 0;
+			for (int k = 0; k <= data.countFiles - 2; ++k)
+			{
+				data.ms[k] = data.ip[k + 1] - data.ip[k] + ip0;
+				data.ip[k] = data.ip[k + 1] + ip0;
+			}
+		}
+		else
+			it = 0;
+		actual = next;
+		if (originFile.eof() && actual != INT_MAX)
+		{
+			*files[it] << actual << " " << INT_MAX;
+			--data.ms[it];
+		}
+	}
+	CloseStream(files);
+	originFile.close();
+}
 
 std::vector<std::fstream*> CreateFilesVector(const int countFiles, std::string *names)
 {
@@ -59,185 +144,127 @@ std::vector<std::fstream*> CreateFilesVector(const int countFiles, std::string *
 		file = new std::fstream(fileName);
 		file->open(fileName, std::ios::out);
 		filesContainer.push_back(file);
+		file->close();
 	}
 	return filesContainer;
 }
 
-void MultiphaseSort(std::string& fileName, const int countFiles = 3)
+void Merging(DataFile& data, std::vector<std::fstream*>& files, std::string *namesFiles)
 {
-	//1
-	std::string* namesFiles = new std::string[countFiles];
-	std::vector<std::fstream*> files = CreateFilesVector(countFiles, namesFiles);
-	std::ifstream originFile(fileName);
-	if (!originFile.is_open())
+	OpenStream(files, std::ios::in);
+	files[data.countFiles - 1]->close();
+	files[data.countFiles - 1]->open(namesFiles[data.countFiles - 1], std::ios::out);
+	while (data.level != 0)
 	{
-		std::cout << "Error!File don't open!\n";
-		exit(-1);
-	}
-	int* ms = new int[countFiles];
-	int* ip = new int[countFiles];
-	for (int i = 0; i <= countFiles - 2; ++i)
-	{
-		ip[i] = 1;
-		ms[i] = 1;
-	}
-	ip[countFiles - 1] = ms[countFiles - 1] = 0;
-	int level = 1, it = 0, actual, next, countSeparator = 0;
-	//2
-	originFile >> actual;
-	while (!originFile.eof())
-	{
-		if (actual != INT_MAX)
-		{
-			*files[it] << actual << " ";
-		}
-		else
-			countSeparator += 1;
-		originFile >> next;
-		while (!originFile.eof() && (actual <= next))
-		{
-			actual = next;
-			if (actual != INT_MAX)
-				*files[it] << actual << " ";
-			else
-				countSeparator += 1;
-			originFile >> next;
-		}
-		ms[it]--;
-		*files[it] << INT_MAX << " ";
-		//3
-		if (ms[it] < ms[it + 1])
-			++it;
-		else if (ms[it] == 0)
-		{
-			//4
-			++level;
-			int ip0 = ip[0];
-			it = 0;
-			for (int k = 0; k <= countFiles - 2; ++k)
-			{
-				ms[k] = ip[k + 1] - ip[k] + ip0;
-				ip[k] = ip[k + 1] + ip0;
-			}
-		}
-		else
-			it = 0;
-		actual = next;
-		if (originFile.eof() && actual != INT_MAX)
-		{
-			*files[it] << actual << " " << INT_MAX;
-			--ms[it];
-		}
-	}
-	//2 end
-	for (int i = 0; i < countFiles; ++i)
-	{
-		files[i]->close();
-	}
-	originFile.close();
-
-	//5
-	for (int i = 0; i <= countFiles - 2; ++i)
-	{
-		files[i]->open(namesFiles[i], std::ios::in);
-	}
-	files[countFiles - 1]->open(namesFiles[countFiles - 1], std::ios::out);
-
-	while (level != 0)
-	{
-		while (*files[countFiles - 2] >> ip[countFiles - 2])
+		while (*files[data.countFiles - 2] >> data.ip[data.countFiles - 2])
 		{
 			int haveFictitious = 1;
-			for (int i = 0; i <= countFiles - 2; ++i)
-				haveFictitious *= ms[i];
+			for (int i = 0; i <= data.countFiles - 2; ++i)
+				haveFictitious *= data.ms[i];
 			while (haveFictitious)
 			{
-				for (int i = 0; i <= countFiles - 2; ++i)
+				for (int i = 0; i <= data.countFiles - 2; ++i)
 				{
-					--ms[i];
-					haveFictitious *= ms[i];
+					--data.ms[i];
+					haveFictitious *= data.ms[i];
 				}
-				++ms[countFiles - 1];
+				++data.ms[data.countFiles - 1];
 			}
-			//7.2
-			for (int i = 0; i <= countFiles - 2; ++i)
+			for (int i = 0; i <= data.countFiles - 2; ++i)
 			{
-				if (ms[i] == 0)
+				if (data.ms[i] == 0)
 				{
-					if (i == countFiles - 2)
+					if (i == data.countFiles - 2)
 						continue;
-					*files[i] >> ip[i];
+					*files[i] >> data.ip[i];
 				}
-				else if (ms[i] > 0)
+				else if (data.ms[i] > 0)
 				{
-					if (i == countFiles - 2)
+					if (i == data.countFiles - 2)
 					{
-						files[countFiles - 2]->close();
-						files[countFiles - 2]->open(namesFiles[countFiles - 2], std::ios::in);
+						files[data.countFiles - 2]->close();
+						files[data.countFiles - 2]->open(namesFiles[data.countFiles - 2], std::ios::in);
 					}
-					--ms[i];
-					ip[i] = INT_MAX;
+					--data.ms[i];
+					data.ip[i] = INT_MAX;
 				}
 			}
-			/*std::cout << "\n"<<"ip: ";
-			for (int i = 0; i < countFiles; ++i)
-			{
-				std::cout << ip[i] << " ";
-			}*/
 			for (; ;)
 			{
-				int indexMin = MinIndex(ip, countFiles);
-				if (ip[indexMin] == INT_MAX)
+				int indexMin = MinIndex(data.ip, data.countFiles);
+				if (data.ip[indexMin] == INT_MAX)
 					break;
-				*files[countFiles - 1] << ip[indexMin] << " ";
-				*files[indexMin] >> ip[indexMin];
-				/*std::cout << "\n" << "ip: ";
-				for (int i = 0; i < countFiles; ++i)
-				{
-					std::cout << ip[i] << " ";
-				}*/
+				*files[data.countFiles - 1] << data.ip[indexMin] << " ";
+				*files[indexMin] >> data.ip[indexMin];
 			}
-			if (level != 1)
+			if (data.level != 1)
 			{
-				*files[countFiles - 1] << INT_MAX << " ";
+				*files[data.countFiles - 1] << INT_MAX << " ";
 			}
 		}
-		//8
-		--level;
-		files[countFiles - 1]->close();
-		files[countFiles - 2]->close();
-		files[countFiles - 2]->open(namesFiles[countFiles - 2], std::ios::out);
-		if (!files[countFiles - 2]->is_open())
+		--data.level;
+		files[data.countFiles - 1]->close();
+		files[data.countFiles - 2]->close();
+		files[data.countFiles - 2]->open(namesFiles[data.countFiles - 2], std::ios::out);
+		if (!files[data.countFiles - 2]->is_open())
 			return;
-		files[countFiles - 1]->open(namesFiles[countFiles - 1], std::ios::in);
-		if (!files[countFiles - 1]->is_open())
+		files[data.countFiles - 1]->open(namesFiles[data.countFiles - 1], std::ios::in);
+		if (!files[data.countFiles - 1]->is_open())
 			return;
-		for (int i = countFiles - 1; i > 0; --i)
+		for (int i = data.countFiles - 1; i > 0; --i)
 		{
 			std::swap(namesFiles[i], namesFiles[i - 1]);
 			std::swap(files[i], files[i - 1]);
-			std::swap(ms[i], ms[i - 1]);
+			std::swap(data.ms[i], data.ms[i - 1]);
 		}
-		/*std::cout << level << "\n" << "ms: ";
-		for (int i = 0; i < countFiles; ++i)
-		{
-			std::cout << ms[i]<< " ";
-		}
-		std::cout << "\n";*/
 	}
+	const char *sort = namesFiles[0].c_str();
+	CloseStream(files);
+	if (std::rename(sort, "sorted.txt"))
+	{
+		std::perror("Error renaming");
+	}
+}
 
+void MultiphaseSort(std::string& fileName, const int countFiles = 3)
+{
+	DataFile data{};
+	std::string* namesFiles = new std::string[countFiles];
+	std::vector<std::fstream*> files = CreateFilesVector(countFiles, namesFiles);
+	std::ifstream originFile;
+	data.countFiles = countFiles;
+	data.originName = fileName;
+	Splitting(data, originFile, files);
+	Merging(data, files, namesFiles);
+	delete[]namesFiles;
 	for (int i = 0; i < countFiles; ++i)
 	{
-		files[i]->close();
 		delete files[i];
 	}
-	delete[]ms;
-	delete[]ip;
-	delete[]namesFiles;
+}
+
+bool SortedFile(std::string &nameFile, const int countFile)
+{
+	MultiphaseSort(nameFile, countFile);
+	if (!IsFileContainsSortedArray("sorted.txt"))
+	{
+		return false;
+	}
+	else
+		return true;
 }
 
 int main()
 {
 	std::string file = "originFile.txt";
-	MultiphaseSort(file, 4);
+	switch (SortedFile(file, 4)) 
+	{
+	case true:
+		std::cout << "Sorted!\n";
+	break;
+	case false:
+		std::cout << "File is not sorted!\n";
+	break;
+	}
 }
+
