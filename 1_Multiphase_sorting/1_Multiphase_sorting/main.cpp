@@ -135,11 +135,11 @@ void Splitting(SortData &data, std::ifstream &originFile, std::vector<std::fstre
 	originFile.close();
 }
 
-std::vector<std::fstream*> CreateFilesVector(const int countFiles, std::string *names)
+std::vector<std::fstream*> CreateFilesVector(std::vector<std::string>& names)
 {
 	std::fstream* file = nullptr;
 	std::vector<std::fstream*> filesContainer;
-	for (int i = 0; i < countFiles; ++i)
+	for (int i = 0; i < names.size(); ++i)
 	{
 		std::string fileName = "file" + std::to_string(i) + ".txt";
 		names[i] = fileName;
@@ -151,7 +151,7 @@ std::vector<std::fstream*> CreateFilesVector(const int countFiles, std::string *
 	return filesContainer;
 }
 
-void Merging(SortData& data, std::vector<std::fstream*>& files, std::string *namesFiles)
+void Merging(SortData& data, std::vector<std::fstream*>& files, std::vector<std::string> namesFiles)
 {
 	OpenStream(files, std::ios::in);
 	files[data.countFiles - 1]->close();
@@ -231,14 +231,13 @@ void Merging(SortData& data, std::vector<std::fstream*>& files, std::string *nam
 void MultiphaseSort(const std::string& fileName, const int countFiles = 3)
 {
 	SortData data{};
-	std::string* namesFiles = new std::string[countFiles];
-	std::vector<std::fstream*> files = CreateFilesVector(countFiles, namesFiles);
+	std::vector<std::string> namesFiles(countFiles);
+	std::vector<std::fstream*> files = CreateFilesVector(namesFiles);
 	std::ifstream originFile;
 	data.countFiles = countFiles;
 	data.originName = fileName;
 	Splitting(data, originFile, files);
 	Merging(data, files, namesFiles);
-	delete[]namesFiles;
 	for (int i = 0; i < countFiles; ++i)
 	{
 		delete files[i];
