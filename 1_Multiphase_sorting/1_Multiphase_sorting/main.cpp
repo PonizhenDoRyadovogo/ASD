@@ -203,6 +203,13 @@ void Merging(SortData& data, std::vector<std::fstream*>& files, std::vector<std:
 			{
 				*files[data.countFiles - 1] << INT_MAX << " ";
 			}
+			else
+			{
+				for (int i = data.countSeparator; i > 0; --i)
+				{
+					*files[data.countFiles - 1] << INT_MAX << " ";
+				}
+			}
 		}
 		--data.level;
 		files[data.countFiles - 1]->close();
@@ -249,7 +256,6 @@ int main()
 {
 	std::string file = "originFile.txt";
 	MultiphaseSort(file, 7);
-
 	switch (IsFileContainsSortedArray("sorted.txt"))
 	{
 	case true:
