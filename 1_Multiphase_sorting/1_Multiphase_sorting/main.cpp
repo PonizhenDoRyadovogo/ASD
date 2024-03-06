@@ -14,12 +14,12 @@ struct DataFile
 	std::string originName;
 };
 
-int MinIndex(std::vector<int> arr, const int size)
+int MinIndex(std::vector<int> arr)
 {
 	int minIndex, min, f;
 	minIndex = 0;
 	min = arr[0];
-	for (int i = 1; i <= size - 2; ++i)
+	for (int i = 1; i <= arr.size() - 2; ++i)
 	{
 		f = arr[i];
 		if (f < min)
@@ -191,7 +191,7 @@ void Merging(DataFile& data, std::vector<std::fstream*>& files, std::string *nam
 			}
 			for (; ;)
 			{
-				int indexMin = MinIndex(data.ip, data.countFiles);
+				int indexMin = MinIndex(data.ip);
 				if (data.ip[indexMin] == INT_MAX)
 					break;
 				*files[data.countFiles - 1] << data.ip[indexMin] << " ";
