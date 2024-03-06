@@ -36,7 +36,7 @@ bool IsFileContainsSortedArray(const std::string& fileName)
 	std::ifstream originFile(fileName);
 	if (!originFile.is_open())
 	{
-		std::cout << "Error! File don't open!\n";
+		std::cerr << "Error! File don't open!\n";
 		exit(-1);
 	}
 	int actual, next;
