@@ -4,7 +4,7 @@
 #include <vector>
 #include <assert.h>
 
-struct DataFile
+struct SortData
 {
 	int countFiles;
 	std::vector<int> ms;
@@ -72,7 +72,7 @@ void CloseStream(std::vector<std::fstream*> &files)
 	}
 }
 
-void Splitting(DataFile &data, std::ifstream &originFile, std::vector<std::fstream*> &files)
+void Splitting(SortData &data, std::ifstream &originFile, std::vector<std::fstream*> &files)
 {
 	data.level = 1;
 	data.countSeparator = 0;
@@ -151,7 +151,7 @@ std::vector<std::fstream*> CreateFilesVector(const int countFiles, std::string *
 	return filesContainer;
 }
 
-void Merging(DataFile& data, std::vector<std::fstream*>& files, std::string *namesFiles)
+void Merging(SortData& data, std::vector<std::fstream*>& files, std::string *namesFiles)
 {
 	OpenStream(files, std::ios::in);
 	files[data.countFiles - 1]->close();
@@ -230,7 +230,7 @@ void Merging(DataFile& data, std::vector<std::fstream*>& files, std::string *nam
 
 void MultiphaseSort(std::string& fileName, const int countFiles = 3)
 {
-	DataFile data{};
+	SortData data{};
 	std::string* namesFiles = new std::string[countFiles];
 	std::vector<std::fstream*> files = CreateFilesVector(countFiles, namesFiles);
 	std::ifstream originFile;
