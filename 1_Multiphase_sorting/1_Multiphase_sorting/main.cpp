@@ -43,11 +43,13 @@ bool IsFileContainsSortedArray(const std::string& fileName)
 
 	while (originFile >> actual)
 	{
-		originFile >> next;
-		if (actual > next)
+		if (originFile >> next)
 		{
-			originFile.close();
-			return false;
+			if (actual > next)
+			{
+				originFile.close();
+				return false;
+			}
 		}
 	}
 	originFile.close();
