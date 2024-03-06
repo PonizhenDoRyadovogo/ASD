@@ -244,21 +244,13 @@ void MultiphaseSort(const std::string& fileName, const int countFiles = 3)
 	}
 }
 
-bool SortedFile(std::string &nameFile, const int countFile)
-{
-	MultiphaseSort(nameFile, countFile);
-	if (!IsFileContainsSortedArray("sorted.txt"))
-	{
-		return false;
-	}
-	else
-		return true;
-}
 
 int main()
 {
 	std::string file = "originFile.txt";
-	switch (SortedFile(file, 4)) 
+	MultiphaseSort(file, 7);
+
+	switch (IsFileContainsSortedArray("sorted.txt"))
 	{
 	case true:
 		std::cout << "Sorted!\n";
@@ -267,5 +259,6 @@ int main()
 		std::cout << "File is not sorted!\n";
 	break;
 	}
+	return 0;
 }
 
