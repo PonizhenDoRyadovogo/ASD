@@ -87,35 +87,35 @@ void Splitting(SortData &data, std::ifstream &originFile, std::vector<std::fstre
 	data.ms.push_back(0);
 	data.ip.push_back(0);
 	OpenStream(files, std::ios::out);
-	int actual, next, it = 0;
-	originFile >> actual;
+	int current, next, j = 0;
+	originFile >> current;
 	while (!originFile.eof())
 	{
-		if (actual != INT_MAX)
+		if (current != INT_MAX)
 		{
-			*files[it] << actual << " ";
+			*files[j] << current << " ";
 		}
 		else
 			data.countSeparator += 1;
 		originFile >> next;
-		while (!originFile.eof() && (actual <= next))
+		while (!originFile.eof() && (current <= next))
 		{
-			actual = next;
-			if (actual != INT_MAX)
-				*files[it] << actual << " ";
+			current = next;
+			if (current != INT_MAX)
+				*files[j] << current << " ";
 			else
 				data.countSeparator += 1;
 			originFile >> next;
 		}
-		data.ms[it]--;
-		*files[it] << INT_MAX << " ";
-		if (data.ms[it] < data.ms[it + 1])
-			++it;
-		else if (data.ms[it] == 0)
+		data.ms[j]--;
+		*files[j] << INT_MAX << " ";
+		if (data.ms[j] < data.ms[j + 1])
+			++j;
+		else if (data.ms[j] == 0)
 		{
 			++data.level;
 			int ip0 = data.ip[0];
-			it = 0;
+			j = 0;
 			for (int k = 0; k <= data.countFiles - 2; ++k)
 			{
 				data.ms[k] = data.ip[k + 1] - data.ip[k] + ip0;
@@ -123,12 +123,12 @@ void Splitting(SortData &data, std::ifstream &originFile, std::vector<std::fstre
 			}
 		}
 		else
-			it = 0;
-		actual = next;
-		if (originFile.eof() && actual != INT_MAX)
+			j = 0;
+		current = next;
+		if (originFile.eof() && current != INT_MAX)
 		{
-			*files[it] << actual << " " << INT_MAX;
-			--data.ms[it];
+			*files[j] << current << " " << INT_MAX;
+			--data.ms[j];
 		}
 	}
 	CloseStream(files);
