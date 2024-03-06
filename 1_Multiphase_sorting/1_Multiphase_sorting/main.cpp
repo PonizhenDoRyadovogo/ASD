@@ -39,13 +39,13 @@ bool IsFileContainsSortedArray(const std::string& fileName)
 		std::cerr << "Error! File don't open!\n";
 		return false;
 	}
-	int actual, next;
+	int current, next;
 
-	while (originFile >> actual)
+	while (originFile >> current)
 	{
 		if (originFile >> next)
 		{
-			if (actual > next)
+			if (current > next)
 			{
 				originFile.close();
 				return false;
@@ -228,7 +228,7 @@ void Merging(SortData& data, std::vector<std::fstream*>& files, std::string *nam
 	}
 }
 
-void MultiphaseSort(std::string& fileName, const int countFiles = 3)
+void MultiphaseSort(const std::string& fileName, const int countFiles = 3)
 {
 	SortData data{};
 	std::string* namesFiles = new std::string[countFiles];
