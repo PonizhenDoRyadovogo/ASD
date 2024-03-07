@@ -40,18 +40,20 @@ bool IsFileContainsSortedArray(const std::string& fileName)
 		return false;
 	}
 	int current, next;
-
-	while (originFile >> current)
+	if (!(originFile >> current))
 	{
-		if (originFile >> next)
-		{
-			if (current > next)
-			{
-				originFile.close();
-				return false;
-			}
-		}
+		return false;
 	}
+
+	while (originFile >> next)
+	{
+		if (current > next)
+		{
+			originFile.close();
+			return false;
+		}
+		current = next;
+	} 
 	originFile.close();
 	return true;
 }
