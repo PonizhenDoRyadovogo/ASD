@@ -41,6 +41,11 @@ void BinaryTree::Node::setRight(Node* right)
     m_right = right;
 }
 
+void BinaryTree::Clear()
+{
+
+}
+
 BinaryTree::BinaryTree(const BinaryTree& other)
 {
     assert(false && "IMPLEMENT ME PLEASE");
