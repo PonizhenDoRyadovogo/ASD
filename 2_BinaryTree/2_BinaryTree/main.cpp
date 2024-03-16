@@ -7,9 +7,9 @@ int main()
 	{
 		for (int i = 0; i < 10; ++i)
 		{
-			foo.addNode(i);
+			foo.AddNode(i);
 		}
 	}
-	foo.printHorizontal();
+	foo.PrintHorizontal();
 	return 0;
 }
