@@ -9,15 +9,16 @@ public:
 	BinaryTree() = default;
 	BinaryTree(const BinaryTree& other);
 	~BinaryTree();
-	void Clear();
-	bool IsIdeal() const;
-	bool IsBalanced() const;
-	Node* AddNode(int key);
-	void PrintHorizontal(int levelSpacing = 4) const;
-	void PrintHorizontal(Node* root, int marginLeft, int levelSpacing) const;
+	void clear(Node *root);
+	void clear();
+	bool isIdeal() const;
+	bool isBalanced() const;
+	Node* addNode(int key);
+	void printHorizontal(int levelSpacing = 4) const;
+	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 
 private:
-	BinaryTree::Node* _AddNode(Node* root, int key);
+	BinaryTree::Node* _addNode(Node* root, int key);
 private:
 	Node* m_root = nullptr;
 };
@@ -30,13 +31,13 @@ public:
 	~Node() = default;
 
 	
-	int GetKey() const;
-	void SetKey(int key);
+	int getKey() const;
+	void setKey(int key);
 
-	Node* GetLeft();
-	Node* GetRight();
-	void SetLeft(Node* left);
-	void SetRight(Node* right);
+	Node* getLeft();
+	Node* getRight();
+	void setLeft(Node* left);
+	void setRight(Node* right);
 	
 private:
 	int m_key = 0;
