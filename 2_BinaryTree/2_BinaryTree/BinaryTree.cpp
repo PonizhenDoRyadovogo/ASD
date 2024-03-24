@@ -18,28 +18,14 @@ BinaryTree::~BinaryTree()
 
 void BinaryTree::clearFrom(Node *root)
 {
-    Node* current = nullptr;
-    std::list<Node*> listNode;
+    if (!root)
+        return;
     std::list<Node*> listForClearNode;
     if(root->getLeft())
-        listNode.push_back(root->getLeft());
+        listForClearNode.push_back(root->getLeft());
     if (root->getRight())
-        listNode.push_back(root->getRight());
-    while (!listNode.empty())
-    {
-        current = listNode.front();
-        if (current->getLeft())
-        {
-            listNode.push_back(current->getLeft());
-            listForClearNode.push_back(current->getLeft());
-        }
-        if (current->getRight())
-        {
-            listNode.push_back(current->getRight());
-            listForClearNode.push_back(current->getRight());
-        }
-        listNode.pop_front();
-    }
+        listForClearNode.push_back(root->getRight());
+    _treeToList(listForClearNode);
     while (!listForClearNode.empty())
     {
         delete listForClearNode.back();
@@ -63,6 +49,8 @@ BinaryTree BinaryTree::clone() const
 
 BinaryTree BinaryTree::clone(Node* root) const
 {
+    if (!root)
+        return *this;
     BinaryTree cloneTree;
     cloneTree.m_root = _clone(root);
     return cloneTree;
@@ -82,6 +70,28 @@ BinaryTree::Node* BinaryTree::_clone(Node* root) const
     cloneRoot->setLeft(_clone(root->getLeft()));
     cloneRoot->setRight(_clone(root->getRight()));
     return cloneRoot;
+}
+
+void BinaryTree::_treeToList(std::list<Node*>& nodeList) const
+{
+    Node* current = nullptr;
+    std::list<Node*> tmp;
+    tmp = nodeList;
+    while (!tmp.empty())
+    {
+        current = tmp.front();
+        tmp.pop_front();
+        if (current->getLeft())
+        {
+            nodeList.push_back(current->getLeft());
+            tmp.push_back(current->getLeft());
+        }
+        if (current->getRight())
+        {
+            nodeList.push_back(current->getRight());
+            tmp.push_back(current->getRight());
+        }
+    }
 }
 
 bool BinaryTree::isIdeal() const
@@ -104,19 +114,10 @@ int BinaryTree::nodeCount() const
     int result = 0;
     if (!m_root)
         return result;
-    Node* current = nullptr;
     std::list<Node*> listNode;
     listNode.push_back(m_root);
-    while (!listNode.empty())
-    {
-        current = listNode.front();
-        listNode.pop_front();
-        ++result;
-        if (current->getLeft())
-            listNode.push_back(current->getLeft());
-        if (current->getRight())
-            listNode.push_back(current->getRight());
-    }
+    _treeToList(listNode);
+    result = listNode.size();
     return result;
 }
 
@@ -188,6 +189,52 @@ BinaryTree::Node* BinaryTree::addNode(int key)
     }
 }
 
+bool BinaryTree::remove(int key)
+{
+    std::list<Node*> listTree;
+    listTree.push_back(m_root);
+    _treeToList(listTree);
+    Node* removableNode = find(key);
+    if (removableNode == m_root)
+    {
+        Node* replacementNode = listTree.back();
+        Node* parentNode = parent(replacementNode);
+        removableNode->setKey(replacementNode->getKey());
+        clearFrom(parentNode);
+        return true;
+    }
+    return false;
+}
+
+bool BinaryTree::remove(Node* root, int key)
+{
+    return false;
+}
+
+BinaryTree::Node* BinaryTree::parent(const Node* child) const
+{
+    if (m_root == child)
+        return m_root;
+    Node* current = nullptr;
+    std::list<Node*> nodeList;
+    nodeList.push_back(m_root);
+    _treeToList(nodeList);
+    while (!nodeList.empty())
+    {
+        current = nodeList.front();
+        if (current->getLeft() == child)
+        {
+            return current;
+        }
+        else if (current->getRight() == child)
+        {
+            return current;
+        }
+        nodeList.pop_front();
+    }
+    return nullptr;
+}
+
 BinaryTree::Node* BinaryTree::root() const
 {
     return m_root;
@@ -206,6 +253,15 @@ BinaryTree::Node* BinaryTree::_addNode(Node* root, int key)
     }
 
     return root;
+}
+
+BinaryTree& BinaryTree::operator=(const BinaryTree& other)
+{
+    if (m_root == other.m_root)
+        return *this;
+    clear();
+    m_root = other._clone(other.m_root);
+    return* this;
 }
 
 BinaryTree::Node::Node(int key, Node* left, Node* right)
@@ -244,4 +300,5 @@ void BinaryTree::Node::setRight(Node* right)
 {
     m_right = right;
 }
+
 

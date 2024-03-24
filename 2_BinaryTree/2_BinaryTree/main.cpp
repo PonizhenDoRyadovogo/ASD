@@ -3,8 +3,7 @@
 
 int main()
 {
-	BinaryTree foo;
-	BinaryTree::Node* node = nullptr;
+	BinaryTree foo, goo;
 	{
 		for (int i = 0; i < 5; ++i)
 		{
@@ -12,14 +11,16 @@ int main()
 		}
 	}
 	foo.printHorizontal();
-	node = foo.find(1);
-	foo.clearFrom(node);
+	std::cout << "=======\n";
+	bool isDeleted = foo.remove(0);
 	foo.printHorizontal();
 	return 0;
-	BinaryTree goo(foo);
-	std::cout << "====================\n";
+	goo = foo;
 	goo.printHorizontal();
-	std::cout << "\ncount = " << goo.nodeCount();
-	std::cout << "\nheight = " << goo.height();
+	//foo.clearFrom(foo.find(1));
+	//foo.printHorizontal();
+	std::cout << "=======\n";
+	foo.clone(foo.find(1)).printHorizontal();
 	return 0;
+	
 }

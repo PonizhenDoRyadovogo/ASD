@@ -8,7 +8,7 @@ public:
 public:
 	BinaryTree() = default;
 	BinaryTree(const BinaryTree& other);
-	~BinaryTree();
+	virtual ~BinaryTree();
 	void clearFrom(Node *root);
 	void clear();
 	BinaryTree clone(Node *root) const;
@@ -19,17 +19,21 @@ public:
 	int nodeCount() const;
 	int height() const;
 	int height(Node* root) const;
-	Node* find(const int key) const;
-	Node* find(Node* root, const int key) const;
-	Node* addNode(int key);
+	virtual Node* find(const int key) const;
+	virtual Node* find(Node* root, const int key) const;
+	virtual Node* addNode(int key);
+	virtual bool remove(int key);
+	virtual bool remove(Node* root, int key);
+	virtual Node* parent(const Node* child) const;
 	Node* root() const;
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
-
+	BinaryTree& operator=(const BinaryTree& other);
 private:
 	BinaryTree::Node* _addNode(Node* root, int key);
 	Node* _clone(Node* root) const;
 	Node* _clone() const;
+	void _treeToList(std::list<Node*>& nodeList) const;
 private:
 	Node* m_root = nullptr;
 };
