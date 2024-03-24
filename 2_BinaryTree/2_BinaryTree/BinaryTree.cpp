@@ -4,6 +4,16 @@
 #include <iostream>
 #include <stdlib.h>
 
+BinaryTree::BinaryTree(const BinaryTree& other)
+{
+    m_root = other._clone();
+}
+
+BinaryTree::~BinaryTree()
+{
+    clear();
+}
+
 void BinaryTree::clear(Node *root)
 {
     if (!root)
@@ -19,14 +29,32 @@ void BinaryTree::clear()
     m_root = nullptr;
 }
 
-BinaryTree::BinaryTree(const BinaryTree& other)
+BinaryTree BinaryTree::clone() const
 {
-    assert(false && "IMPLEMENT ME PLEASE");
+    return clone(m_root);
 }
 
-BinaryTree::~BinaryTree()
+BinaryTree BinaryTree::clone(Node* root) const
 {
-    assert(false && "IMPLEMENT ME PLEASE");
+    BinaryTree cloneTree;
+    cloneTree.m_root = _clone(root);
+    return cloneTree;
+}
+
+BinaryTree::Node* BinaryTree::_clone() const
+{
+    return _clone(m_root);
+}
+
+BinaryTree::Node* BinaryTree::_clone(Node* root) const
+{
+    Node* cloneRoot = nullptr;
+    if (!root)
+        return cloneRoot;
+    cloneRoot = new Node(root->getKey());
+    cloneRoot->setLeft(_clone(root->getLeft()));
+    cloneRoot->setRight(_clone(root->getRight()));
+    return cloneRoot;
 }
 
 bool BinaryTree::isIdeal() const

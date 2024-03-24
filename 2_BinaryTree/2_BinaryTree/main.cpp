@@ -10,6 +10,9 @@ int main()
 			foo.addNode(i);
 		}
 	}
+	BinaryTree goo(foo);
 	foo.printHorizontal();
+	std::cout << "====================\n";
+	goo.printHorizontal();
 	return 0;
 }

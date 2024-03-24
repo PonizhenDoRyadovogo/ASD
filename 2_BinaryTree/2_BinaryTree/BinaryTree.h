@@ -11,6 +11,8 @@ public:
 	~BinaryTree();
 	void clear(Node *root);
 	void clear();
+	BinaryTree clone(Node *root) const;
+	BinaryTree clone() const;
 	bool isIdeal() const;
 	bool isBalanced() const;
 	Node* addNode(int key);
@@ -19,6 +21,8 @@ public:
 
 private:
 	BinaryTree::Node* _addNode(Node* root, int key);
+	Node* _clone(Node* root) const;
+	Node* _clone() const;
 private:
 	Node* m_root = nullptr;
 };
