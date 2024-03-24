@@ -5,15 +5,14 @@ int main()
 {
 	BinaryTree foo, goo;
 	{
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 10; ++i)
 		{
 			foo.addNode(i);
 		}
 	}
 	foo.printHorizontal();
 	std::cout << "=======\n";
-	bool isDeleted = foo.remove(0);
-	foo.printHorizontal();
+	foo.printLeafs();
 	return 0;
 	goo = foo;
 	goo.printHorizontal();

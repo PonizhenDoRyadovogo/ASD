@@ -1,5 +1,6 @@
 #pragma once
 #include <list>
+#include <vector>
 class BinaryTree
 {
 public:
@@ -25,6 +26,8 @@ public:
 	virtual bool remove(int key);
 	virtual bool remove(Node* root, int key);
 	virtual Node* parent(const Node* child) const;
+	std::vector<Node*> leafs() const;
+	void printLeafs() const;
 	Node* root() const;
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;

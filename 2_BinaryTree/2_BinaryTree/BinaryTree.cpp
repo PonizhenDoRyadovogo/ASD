@@ -235,6 +235,32 @@ BinaryTree::Node* BinaryTree::parent(const Node* child) const
     return nullptr;
 }
 
+std::vector<BinaryTree::Node*> BinaryTree::leafs() const
+{
+    std::list<Node*> nodeList;
+    std::vector<Node*> leafs;
+    nodeList.push_back(m_root);
+    _treeToList(nodeList);
+    while (!nodeList.empty())
+    {
+        if (!nodeList.front()->getLeft() && !nodeList.front()->getRight())
+        {
+            leafs.push_back(nodeList.front());
+        }
+        nodeList.pop_front();
+    }
+    return leafs;
+}
+
+void BinaryTree::printLeafs() const
+{
+    std::vector<Node*> vectorLeafs = leafs();
+    for (Node* leafs : vectorLeafs)
+    {
+        std::cout << leafs->getKey() << " ";
+    }
+}
+
 BinaryTree::Node* BinaryTree::root() const
 {
     return m_root;
