@@ -1,5 +1,5 @@
 #pragma once
-
+#include <list>
 class BinaryTree
 {
 public:
@@ -9,7 +9,7 @@ public:
 	BinaryTree() = default;
 	BinaryTree(const BinaryTree& other);
 	~BinaryTree();
-	void clear(Node *root);
+	void clearFrom(Node *root);
 	void clear();
 	BinaryTree clone(Node *root) const;
 	BinaryTree clone() const;
@@ -17,6 +17,10 @@ public:
 	bool isBalanced() const;
 	bool isEmpty() const;
 	int nodeCount() const;
+	int height() const;
+	int height(Node* root) const;
+	Node* find(const int key) const;
+	Node* find(Node* root, const int key) const;
 	Node* addNode(int key);
 	Node* root() const;
 	void printHorizontal(int levelSpacing = 4) const;
@@ -37,7 +41,6 @@ public:
 	Node(int key = 0, Node* left = nullptr, Node* right = nullptr);
 	~Node() = default;
 
-	
 	int getKey() const;
 	void setKey(int key);
 
