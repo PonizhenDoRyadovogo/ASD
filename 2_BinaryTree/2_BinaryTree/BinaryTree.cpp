@@ -1,7 +1,9 @@
 #include "BinaryTree.h"
 #include <assert.h>
 #include <string>
+#include <vector>
 #include <iostream>
+#include <list>
 #include <stdlib.h>
 
 BinaryTree::BinaryTree(const BinaryTree& other)
@@ -67,6 +69,31 @@ bool BinaryTree::isBalanced() const
     return false;
 }
 
+bool BinaryTree::isEmpty() const
+{
+    return m_root == nullptr;
+}
+
+int BinaryTree::nodeCount() const
+{
+    int result = 0;
+    if (!m_root)
+        return result;
+    Node* current = nullptr;
+    std::list<Node*> listNode;
+    listNode.push_back(m_root);
+    while (!listNode.empty())
+    {
+        current = listNode.front();
+        listNode.pop_front();
+        ++result;
+        if (current->getLeft())
+            listNode.push_back(current->getLeft());
+        if (current->getRight())
+            listNode.push_back(current->getRight());
+    }
+    return result;
+}
 
 void BinaryTree::printHorizontal(int levelSpacing) const
 {
@@ -92,6 +119,11 @@ BinaryTree::Node* BinaryTree::addNode(int key)
     else {
         return m_root = new Node(key);
     }
+}
+
+BinaryTree::Node* BinaryTree::root() const
+{
+    return m_root;
 }
 
 BinaryTree::Node* BinaryTree::_addNode(Node* root, int key)

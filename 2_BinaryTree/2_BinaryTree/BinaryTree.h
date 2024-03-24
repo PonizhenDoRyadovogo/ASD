@@ -15,7 +15,10 @@ public:
 	BinaryTree clone() const;
 	bool isIdeal() const;
 	bool isBalanced() const;
+	bool isEmpty() const;
+	int nodeCount() const;
 	Node* addNode(int key);
+	Node* root() const;
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 

@@ -14,5 +14,6 @@ int main()
 	foo.printHorizontal();
 	std::cout << "====================\n";
 	goo.printHorizontal();
+	std::cout << "\ncount = " << goo.nodeCount();
 	return 0;
 }
