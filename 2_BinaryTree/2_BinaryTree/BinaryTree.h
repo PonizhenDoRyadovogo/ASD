@@ -22,18 +22,19 @@ public:
 	int height(Node* root) const;
 	virtual Node* find(const int key) const;
 	virtual Node* find(Node* root, const int key) const;
-	virtual Node* addNode(int key);
-	virtual bool remove(int key);
-	virtual bool remove(Node* root, int key);
+	virtual Node* addNode(const int key);
+	virtual bool remove(const int key);
+	virtual bool remove(Node* root, const int key);
 	virtual Node* parent(const Node* child) const;
 	std::vector<Node*> leafs() const;
+	std::vector<int> treeToVector()const;
 	void printLeafs() const;
 	Node* root() const;
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 	BinaryTree& operator=(const BinaryTree& other);
 private:
-	BinaryTree::Node* _addNode(Node* root, int key);
+	BinaryTree::Node* _addNode(Node* root, const int key);
 	Node* _clone(Node* root) const;
 	Node* _clone() const;
 	void _treeToList(std::list<Node*>& nodeList) const;

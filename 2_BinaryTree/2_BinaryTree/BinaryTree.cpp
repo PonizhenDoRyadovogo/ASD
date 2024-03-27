@@ -5,6 +5,7 @@
 #include <iostream>
 #include <list>
 #include <stdlib.h>
+#include<algorithm>
 
 BinaryTree::BinaryTree(const BinaryTree& other)
 {
@@ -179,7 +180,7 @@ void BinaryTree::printHorizontal(Node* root, int marginLeft, int levelSpacing) c
     printHorizontal(root->getLeft(), marginLeft + levelSpacing, levelSpacing);
 }
 
-BinaryTree::Node* BinaryTree::addNode(int key)
+BinaryTree::Node* BinaryTree::addNode(const int key)
 {
     if (m_root) {
         return _addNode(m_root, key);
@@ -189,7 +190,7 @@ BinaryTree::Node* BinaryTree::addNode(int key)
     }
 }
 
-bool BinaryTree::remove(int key)
+bool BinaryTree::remove(const int key)
 {
     std::list<Node*> listTree;
     listTree.push_back(m_root);
@@ -206,7 +207,7 @@ bool BinaryTree::remove(int key)
     return false;
 }
 
-bool BinaryTree::remove(Node* root, int key)
+bool BinaryTree::remove(Node* root, const int key)
 {
     return false;
 }
@@ -250,6 +251,21 @@ std::vector<BinaryTree::Node*> BinaryTree::leafs() const
         nodeList.pop_front();
     }
     return leafs;
+}
+
+std::vector<int> BinaryTree::treeToVector()const
+{
+    std::list<Node*> nodeList;
+    nodeList.push_back(m_root);
+    _treeToList(nodeList);
+    std::vector<int> vec;
+    while (!nodeList.empty())
+    {
+        vec.push_back(nodeList.front()->getKey());
+        nodeList.pop_front();
+    }
+    std::sort(begin(vec),end(vec));
+    return vec;
 }
 
 void BinaryTree::printLeafs() const
