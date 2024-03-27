@@ -14,8 +14,8 @@ public:
 	void clear();
 	BinaryTree clone(Node *root) const;
 	BinaryTree clone() const;
-	bool isIdeal() const;
 	bool isBalanced() const;
+	bool isBalanced(Node* root) const;
 	bool isEmpty() const;
 	int nodeCount() const;
 	int height() const;
@@ -28,6 +28,10 @@ public:
 	virtual Node* parent(const Node* child) const;
 	std::vector<Node*> leafs() const;
 	std::vector<int> treeToVector()const;
+	int min() const;
+	int max() const;
+	int level(const int key) const;
+	int level(Node* root, const int key, int currentLevel) const;
 	void printLeafs() const;
 	Node* root() const;
 	void printHorizontal(int levelSpacing = 4) const;
@@ -38,6 +42,7 @@ private:
 	Node* _clone(Node* root) const;
 	Node* _clone() const;
 	void _treeToList(std::list<Node*>& nodeList) const;
+	std::vector<Node*> _leafs(Node* root) const;
 private:
 	Node* m_root = nullptr;
 };
@@ -56,7 +61,7 @@ public:
 	Node* getRight();
 	void setLeft(Node* left);
 	void setRight(Node* right);
-	
+
 private:
 	int m_key = 0;
 	Node* m_left = nullptr;
