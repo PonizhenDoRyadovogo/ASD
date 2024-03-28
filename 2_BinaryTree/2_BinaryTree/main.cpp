@@ -6,7 +6,7 @@ int main()
 {
 	BinaryTree foo, goo;
 	{
-		for (int i = 0; i < 2; ++i)
+		for (int i = 0; i < 10; ++i)
 		{
 			foo.addNode(i);
 		}
@@ -20,7 +20,7 @@ int main()
 	}
 	std::cout << "\nmin = " << foo.min();
 	std::cout << "\nmax = " << foo.max()<<"\n";
-	std::cout<<"level 5 = " << foo.level(100);
+	std::cout<<"level 5 = " << foo.level(5);
 	if (foo.isBalanced() == true)
 		std::cout << "balanced";
 	else

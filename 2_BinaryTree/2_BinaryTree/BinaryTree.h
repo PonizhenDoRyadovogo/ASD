@@ -1,11 +1,11 @@
 #pragma once
 #include <list>
 #include <vector>
+
 class BinaryTree
 {
 public:
 	class Node;
-
 public:
 	BinaryTree() = default;
 	BinaryTree(const BinaryTree& other);
@@ -47,7 +47,6 @@ private:
 	Node* m_root = nullptr;
 };
 
-
 class BinaryTree::Node
 {
 public:
@@ -67,3 +66,4 @@ private:
 	Node* m_left = nullptr;
 	Node* m_right = nullptr;
 };
+
