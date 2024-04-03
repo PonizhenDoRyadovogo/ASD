@@ -107,10 +107,8 @@ bool BinaryTree::isBalanced(Node* root) const
     int left = height(root->getLeft());
     int right = height(root->getRight());
     int difference = right - left;
-    bool isBalance = false;
-    if (difference == 0 || difference == 1 || difference == -1)
-        isBalance = true;
-    return isBalance * isBalanced(root->getLeft()) * isBalanced(root->getRight());
+    bool balanced = (difference <= 1 && difference >= -1);
+    return balanced && isBalanced(root->getLeft()) && isBalanced(root->getRight());
 }
 
 bool BinaryTree::isEmpty() const
@@ -161,14 +159,10 @@ BinaryTree::Node* BinaryTree::find(Node* root, const int key) const
         return root;
     else
     {
-        Node* left = find(root->getLeft(), key);
-        Node* right = find(root->getRight(), key);
-        if (left)
-            return left;
-        else if (right)
-            return right;
-        else
-            return nullptr;
+        Node* node = find(root->getLeft(), key);
+        if (!node)
+            node = find(root->getRight(), key);
+        return node;
     }
 }
 
@@ -204,6 +198,8 @@ bool BinaryTree::remove(const int key)
     listTree.push_back(m_root);
     _treeToList(listTree);
     Node* removableNode = find(key);
+    if (!removableNode)
+        return false;
     Node* replacementNode = nullptr;
     Node* parentNode = nullptr;
     Node* parentReplacementNode = nullptr;
@@ -268,11 +264,6 @@ bool BinaryTree::remove(const int key)
     return false;
 }
 
-bool BinaryTree::remove(Node* root, const int key)
-{
-    return false;
-}
-
 BinaryTree::Node* BinaryTree::parent(const Node* child) const
 {
     if (m_root == child)
@@ -334,9 +325,11 @@ std::vector<BinaryTree::Node*> BinaryTree::_leafs(Node* root) const
 std::vector<int> BinaryTree::treeToVector()const
 {
     std::list<Node*> nodeList;
+    std::vector<int> vec;
+    if (!m_root)
+        return vec;
     nodeList.push_back(m_root);
     _treeToList(nodeList);
-    std::vector<int> vec;
     while (!nodeList.empty())
     {
         vec.push_back(nodeList.front()->getKey());
@@ -348,12 +341,16 @@ std::vector<int> BinaryTree::treeToVector()const
 
 int BinaryTree::min() const
 {
+    if (!m_root)
+        return INT_MIN;
     std::vector<int> vec = treeToVector();
     return vec[0];
 }
 
 int BinaryTree::max() const
 {
+    if (!m_root)
+        return INT_MAX;
     std::vector<int> vec = treeToVector();
     return vec.back();
 }

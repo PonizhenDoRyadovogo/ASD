@@ -24,7 +24,6 @@ public:
 	virtual Node* find(Node* root, const int key) const;
 	virtual Node* addNode(const int key);
 	virtual bool remove(const int key);
-	virtual bool remove(Node* root, const int key);
 	virtual Node* parent(const Node* child) const;
 	std::vector<Node*> leafs() const;
 	std::vector<int> treeToVector()const;
