@@ -17,7 +17,7 @@ BinaryTree::~BinaryTree()
     clear();
 }
 
-void BinaryTree::clearFrom(Node *root)
+void BinaryTree::clearChildren(Node *root)
 {
     if (!root)
         return;
@@ -38,7 +38,7 @@ void BinaryTree::clearFrom(Node *root)
 
 void BinaryTree::clear()
 {
-    clearFrom(m_root);
+    clearChildren(m_root);
     delete m_root;
     m_root = nullptr;
 }

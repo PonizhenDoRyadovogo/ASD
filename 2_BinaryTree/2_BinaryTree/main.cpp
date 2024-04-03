@@ -29,7 +29,7 @@ int main()
 	return 0;
 	goo = foo;
 	goo.printHorizontal();
-	//foo.clearFrom(foo.find(1));
+	//foo.clearChildren(foo.find(1));
 	//foo.printHorizontal();
 	std::cout << "=======\n";
 	foo.clone(foo.find(1)).printHorizontal();

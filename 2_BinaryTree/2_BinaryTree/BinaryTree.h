@@ -10,7 +10,7 @@ public:
 	BinaryTree() = default;
 	BinaryTree(const BinaryTree& other);
 	virtual ~BinaryTree();
-	void clearFrom(Node *root);
+	void clearChildren(Node *root);
 	void clear();
 	BinaryTree clone(Node *root) const;
 	BinaryTree clone() const;
