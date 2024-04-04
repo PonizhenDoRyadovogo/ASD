@@ -22,7 +22,7 @@ public:
 	int height(Node* root) const;
 	virtual Node* find(const int key) const;
 	virtual Node* find(Node* root, const int key) const;
-	virtual Node* addNode(const int key);
+	virtual Node* add(const int key);
 	virtual bool remove(const int key);
 	virtual Node* parent(const Node* child) const;
 	std::vector<Node*> leafs() const;

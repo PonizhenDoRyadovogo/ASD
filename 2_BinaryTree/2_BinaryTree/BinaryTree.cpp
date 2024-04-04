@@ -182,7 +182,7 @@ void BinaryTree::printHorizontal(Node* root, int marginLeft, int levelSpacing) c
     printHorizontal(root->getLeft(), marginLeft + levelSpacing, levelSpacing);
 }
 
-BinaryTree::Node* BinaryTree::addNode(const int key)
+BinaryTree::Node* BinaryTree::add(const int key)
 {
     if (m_root) {
         return _addNode(m_root, key);
