@@ -251,6 +251,7 @@ bool BinaryTree::remove(const int key)
         else if (parentNode->getRight() == removableNode)
             parentNode->setRight(replacementNode);
         delete removableNode;
+        return true;
     }
     else
     {
@@ -346,6 +347,12 @@ std::vector<int> BinaryTree::treeToVector()const
     }
     std::sort(begin(vec),end(vec));
     return vec;
+}
+
+int BinaryTree::size() const
+{
+    std::vector<int> vec = treeToVector();
+    return vec.size();
 }
 
 int BinaryTree::min() const

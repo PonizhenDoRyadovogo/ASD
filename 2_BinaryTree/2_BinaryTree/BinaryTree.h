@@ -27,6 +27,7 @@ public:
 	virtual Node* parent(const Node* child) const;
 	std::vector<Node*> leafs() const;
 	std::vector<int> treeToVector()const;
+	int size() const;
 	int min() const;
 	int max() const;
 	int level(const int key) const;

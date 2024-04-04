@@ -12,12 +12,15 @@ SOURCES += \
     BinaryTree.cpp \
     GraphicsItemNode.cpp \
     main.cpp \
-    treewidget.cpp
+    treewidget.cpp \
+    BinaryTreeTester.cpp
 
 HEADERS += \
     BinaryTree.h \
+    BinaryTreeTester.h \
     GraphicsItemNode.h \
-    treewidget.h
+    treewidget.h \
+    BinaryTreeTester.h
 
 FORMS += \
     treewidget.ui
