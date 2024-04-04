@@ -80,18 +80,19 @@ void BinaryTree::_treeToList(std::list<Node*>& nodeList) const
     tmp = nodeList;
     while (!tmp.empty())
     {
-        current = tmp.front();
-        tmp.pop_front();
-        if (current->getLeft())
+        if(tmp.front())
         {
+            current = tmp.front();
+            if(current->getLeft()){
             nodeList.push_back(current->getLeft());
             tmp.push_back(current->getLeft());
-        }
-        if (current->getRight())
-        {
+            }
+            if(current->getRight()){
             nodeList.push_back(current->getRight());
             tmp.push_back(current->getRight());
+            }
         }
+        tmp.pop_front();
     }
 }
 
@@ -205,6 +206,12 @@ bool BinaryTree::remove(const int key)
     Node* parentReplacementNode = nullptr;
     if (removableNode == m_root)
     {
+        if (!removableNode->getLeft() && !removableNode->getRight())
+        {
+            delete m_root;
+            m_root = nullptr;
+            return true;
+        }
         replacementNode = listTree.back();
         parentNode = parent(replacementNode);
         removableNode->setKey(replacementNode->getKey());
@@ -251,13 +258,15 @@ bool BinaryTree::remove(const int key)
         if (removableNode->getLeft())
         {
             replacementNode = removableNode->getLeft();
-            parentNode->setLeft(replacementNode);
         }
         else if(removableNode->getRight())
         {
             replacementNode = removableNode->getRight();
-            parentNode->setRight(replacementNode);
         }
+        if (parentNode->getLeft() == removableNode)
+            parentNode->setLeft(replacementNode);
+        else if (parentNode->getRight() == removableNode)
+            parentNode->setRight(replacementNode);
         delete removableNode;
         return true;
     }

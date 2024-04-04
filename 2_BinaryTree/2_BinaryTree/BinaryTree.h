@@ -20,7 +20,7 @@ public:
 	int nodeCount() const;
 	int height() const;
 	int height(Node* root) const;
-	virtual Node* find(const int key) const;
+	Node* find(const int key) const;
 	virtual Node* find(Node* root, const int key) const;
 	virtual Node* add(const int key);
 	virtual bool remove(const int key);
@@ -36,8 +36,9 @@ public:
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 	BinaryTree& operator=(const BinaryTree& other);
+protected:
+	virtual BinaryTree::Node* _addNode(Node* root, const int key);
 private:
-	BinaryTree::Node* _addNode(Node* root, const int key);
 	Node* _clone(Node* root) const;
 	Node* _clone() const;
 	void _treeToList(std::list<Node*>& nodeList) const;
