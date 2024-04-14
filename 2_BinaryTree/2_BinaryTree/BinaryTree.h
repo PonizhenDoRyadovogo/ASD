@@ -22,7 +22,7 @@ public:
 	int height(Node* root) const;
 	Node* find(const int key) const;
 	virtual Node* find(Node* root, const int key) const;
-	virtual Node* add(const int key);
+	Node* add(const int key);
 	virtual bool remove(const int key);
 	virtual Node* parent(const Node* child) const;
 	std::vector<Node*> leafs() const;
@@ -39,12 +39,12 @@ public:
 	BinaryTree& operator=(const BinaryTree& other);
 protected:
 	virtual BinaryTree::Node* _addNode(Node* root, const int key);
-private:
-	Node* _clone(Node* root) const;
-	Node* _clone() const;
 	void _treeToList(std::list<Node*>& nodeList) const;
 	std::vector<Node*> _leafs(Node* root) const;
 private:
+	Node* _clone(Node* root) const;
+	Node* _clone() const;
+protected:
 	Node* m_root = nullptr;
 };
 
