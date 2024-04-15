@@ -41,8 +41,8 @@ protected:
 	virtual BinaryTree::Node* _addNode(Node* root, const int key);
 	void _treeToList(std::list<Node*>& nodeList) const;
 	std::vector<Node*> _leafs(Node* root) const;
-private:
 	Node* _clone(Node* root) const;
+private:
 	Node* _clone() const;
 protected:
 	Node* m_root = nullptr;
