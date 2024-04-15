@@ -26,12 +26,12 @@ public:
 	virtual bool remove(const int key);
 	virtual Node* parent(const Node* child) const;
 	std::vector<Node*> leafs() const;
-	std::vector<int> treeToVector()const;
+	virtual std::vector<int> treeToVector()const;
 	int size() const;
-	int min() const;
-	int max() const;
+	virtual int min() const;
+	virtual int max() const;
 	int level(const int key) const;
-	int level(Node* root, const int key, int currentLevel) const;
+	virtual int level(Node* root, const int key, int currentLevel) const;
 	void printLeafs() const;
 	Node* root() const;
 	void printHorizontal(int levelSpacing = 4) const;
