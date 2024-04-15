@@ -11,7 +11,13 @@ int main()
 	}
 	foo.printHorizontal();
 	std::cout << "\n===============\n";
-	goo = foo;
-	goo.printHorizontal();
+	std::cout << "min = " << foo.min() << "\n";
+	std::cout << "max = " << foo.max() << "\n";
+	std::cout << "level 30 = " << foo.BinaryTree::level(90);
+	/*std::vector<int> keys = foo.treeToVector();
+	for (int i : keys)
+	{
+		std::cout << i << " ";
+	}*/
 	return 0;
 }
