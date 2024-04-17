@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include "BinaryTree.h"
+//#include "../../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h"
 class QGraphicsScene;
 
 namespace Ui {
@@ -20,12 +21,14 @@ public:
 public slots:
     void addKey(int key);
     void removeKey(int key);
+    void changeTree(int index);
+    void findKey(int key);
 protected:
     void resizeEvent(QResizeEvent *event)override;
 private:
     void _updateSceneRect();
-    void _redrawTree();
-    QPointF _drawTree(BinaryTree::Node* root, int leftBorderPos, int rightBorderPos, int yPos);
+    void _redrawTree(BinaryTree::Node* targetNode = nullptr);
+    QPointF _drawTree(BinaryTree::Node* root, int leftBorderPos, int rightBorderPos, int yPos, BinaryTree::Node* targetNode = nullptr);
 private:
     Ui::TreeWidget *ui;
     BinaryTree *m_tree = nullptr;

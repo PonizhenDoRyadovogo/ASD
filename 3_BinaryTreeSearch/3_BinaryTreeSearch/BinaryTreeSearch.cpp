@@ -1,4 +1,6 @@
 #include "BinaryTreeSearch.h"
+#include <stdlib.h>
+
 
 BinaryTreeSearch BinaryTreeSearch::clone() const
 {
@@ -7,7 +9,7 @@ BinaryTreeSearch BinaryTreeSearch::clone() const
 
 BinaryTreeSearch BinaryTreeSearch::clone(Node* root) const
 {
-	BinaryTree tempTree = BinaryTree::clone();
+    BinaryTree tempTree = BinaryTree::clone(root);
 	BinaryTreeSearch newSearchTree;
 	newSearchTree.m_root = _clone(tempTree.root());
 	return newSearchTree;
@@ -121,12 +123,15 @@ bool BinaryTreeSearch::remove(const int key)
 		delete removableNode;
 		return true;
 	}
+    return false;
 }
 
 int BinaryTreeSearch::min()const
 {
-	if (!m_root)
-		return INT_MIN;
+    if (!m_root)
+    {
+        return INT_MIN;
+    }
 	Node* root = m_root;
 	int min;
 	while (root)

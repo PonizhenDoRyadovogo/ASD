@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.cpp \
     BinaryTree.cpp \
     GraphicsItemNode.cpp \
     main.cpp \
@@ -16,6 +17,7 @@ SOURCES += \
     BinaryTreeTester.cpp
 
 HEADERS += \
+    ../../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h \
     BinaryTree.h \
     BinaryTreeTester.h \
     GraphicsItemNode.h \
