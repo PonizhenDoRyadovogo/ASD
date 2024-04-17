@@ -425,6 +425,22 @@ BinaryTree& BinaryTree::operator=(const BinaryTree& other)
     return* this;
 }
 
+std::vector<int> BinaryTree::LRR()const
+{
+    std::vector<int> keys;
+    _LRR(m_root, keys);
+    return keys;
+}
+
+void BinaryTree::_LRR(Node* root, std::vector<int> &vec)const
+{
+    if (!root)
+        return;
+    _LRR(root->getLeft(), vec);
+    vec.push_back(root->getKey());
+    _LRR(root->getRight(), vec);
+}
+
 BinaryTree::Node::Node(int key, Node* left, Node* right)
 	: m_key(key)
 	, m_left(left)

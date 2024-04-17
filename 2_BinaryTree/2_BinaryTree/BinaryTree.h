@@ -37,11 +37,13 @@ public:
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 	BinaryTree& operator=(const BinaryTree& other);
+	std::vector<int> LRR()const;
 protected:
 	virtual BinaryTree::Node* _addNode(Node* root, const int key);
 	void _treeToList(std::list<Node*>& nodeList) const;
 	std::vector<Node*> _leafs(Node* root) const;
 	Node* _clone(Node* root) const;
+	void _LRR(Node* root, std::vector<int> &vec)const;
 private:
 	Node* _clone() const;
 protected:
