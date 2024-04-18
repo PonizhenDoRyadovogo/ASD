@@ -87,7 +87,7 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
     GraphicsItemNode *item = new GraphicsItemNode(QString::number(root->getKey()));
     item->setFontSize(m_fontSize);
 
-    if(targetNode && root->getKey() == targetNode->getKey())
+    if(root == targetNode)
     {
         item->setFillColor(Qt::red);
         item->update();

@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     ../../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.cpp \
+    ../../3_BinaryTreeSearch/3_BinaryTreeSearch/SearchTreeTester.cpp \
     BinaryTree.cpp \
     GraphicsItemNode.cpp \
     main.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
 
 HEADERS += \
     ../../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h \
+    ../../3_BinaryTreeSearch/3_BinaryTreeSearch/SearchTreeTester.h \
     BinaryTree.h \
     BinaryTreeTester.h \
     GraphicsItemNode.h \
