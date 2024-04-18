@@ -354,7 +354,12 @@ int BinaryTree::size() const
     std::vector<int> vec = treeToVector();
     return vec.size();
 }
-
+/*
+* @function min
+* @brief find min key in BinaryTreeSearch
+* @return value of minimal key in BinaryTreeSearch.
+* If tree is empty, returned INT_MIN
+*/
 int BinaryTree::min() const
 {
     if (!m_root)
@@ -362,7 +367,12 @@ int BinaryTree::min() const
     std::vector<int> vec = treeToVector();
     return vec[0];
 }
-
+/*
+* @function max
+* @brief find max key in BinaryTreeSearch
+* @return value of maximal key in BinaryTreeSearch.
+* If tree is empty, returned INT_MAX
+*/
 int BinaryTree::max() const
 {
     if (!m_root)
@@ -423,6 +433,22 @@ BinaryTree& BinaryTree::operator=(const BinaryTree& other)
     clear();
     m_root = other._clone(other.m_root);
     return* this;
+}
+
+std::vector<int> BinaryTree::LRR()const
+{
+    std::vector<int> keys;
+    _LRR(m_root, keys);
+    return keys;
+}
+
+void BinaryTree::_LRR(Node* root, std::vector<int>& keys)const
+{
+    if (!root)
+        return;
+    _LRR(root->getLeft(), keys);
+    keys.push_back(root->getKey());
+    _LRR(root->getRight(), keys);
 }
 
 BinaryTree::Node::Node(int key, Node* left, Node* right)

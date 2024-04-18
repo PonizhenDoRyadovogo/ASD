@@ -25,6 +25,11 @@ void BinaryTreeTester::test(const int size)
     height();
 }
 
+bool BinaryTreeTester::useConsoleOutput() const
+{
+    return m_useConsoleOutput;
+}
+
 bool BinaryTreeTester::addAndCountCheckEnabled() const
 {
     return m_addAndCountCheckEnabled;
@@ -53,6 +58,11 @@ bool BinaryTreeTester::assignCheckEnabled() const
 bool BinaryTreeTester::heightCheckEnabled() const
 {
     return m_heightCheckEnabled;
+}
+
+void BinaryTreeTester::setUseConsoleOutput(const bool enabled)
+{
+    m_useConsoleOutput = enabled;
 }
 
 void BinaryTreeTester::setAddAndCountCheckEnabled(const bool enabled)
@@ -109,8 +119,10 @@ void BinaryTreeTester::addAndCount()
     BinaryTree* tree = allocateTree();
     check_addAndCount(tree, 0);
 
-    for (int i = 0; i < m_maxSize; ++i) {
-        tree->add(i);
+    std::vector<int> nodeKeys = generateKeys();
+    for (int i = 0; i < m_maxSize; ++i) 
+    {
+        tree->add(nodeKeys[i]);
         check_addAndCount(tree, i + 1);
     }
 
@@ -132,8 +144,9 @@ void BinaryTreeTester::destructor()
     for (int i = 0; i < runsCount; i++)
     {
         BinaryTree* tree = allocateTree();
+        std::vector<int> nodeKeys = generateKeys();
         for (int i = 0; i < m_maxSize; ++i) {
-            tree->add(i);
+            tree->add(nodeKeys[i]);
         }
         deallocateTree(tree);
     }
@@ -148,14 +161,12 @@ void BinaryTreeTester::remove()
         return;
     }
 
-    std::vector<int> nodeKeys;
-
     BinaryTree* tree = allocateTree();
-    check_remove(tree, invalidKey(), false, nodeKeys.size());
+    check_remove(tree, invalidKey(), false, 0);
 
+    std::vector<int> nodeKeys = generateKeys();
     for (int i = 0; i < m_maxSize; ++i) {
-        nodeKeys.push_back(i);
-        tree->add(i);
+        tree->add(nodeKeys[i]);
     }
 
     while (!nodeKeys.empty()) {
@@ -196,8 +207,9 @@ void BinaryTreeTester::clear()
     BinaryTree* tree = allocateTree();
     for (int i = 0; i < 200; i++)
     {
+        std::vector<int> nodeKeys = generateKeys();
         for (int i = 0; i < m_maxSize; ++i) {
-            tree->add(i);
+            tree->add(nodeKeys[i]);
         }
         tree->clear();
         check_clear(tree, 0);
@@ -220,8 +232,9 @@ void BinaryTreeTester::assign()
 
     BinaryTree tree1;
 
+    std::vector<int> nodeKeys = generateKeys();
     for (int i = 0; i < m_maxSize; ++i) {
-        tree1.add(i);
+        tree1.add(nodeKeys[i]);
     }
 
     BinaryTree tree2 = tree1; //Конструктор копирования
@@ -239,6 +252,23 @@ void BinaryTreeTester::assign()
 
     tree3 = tree2; //Присваивание дерева большего размера
     check_assign(&tree2, &tree3);
+}
+
+std::vector<int> BinaryTreeTester::generateKeys()
+{
+    std::vector<int> orderedKeys;
+    for (int i = 0; i < m_maxSize; ++i) {
+        orderedKeys.push_back(i);
+    }
+
+    std::vector<int> keys;
+    while (!orderedKeys.empty()) {
+        int i = rand() % orderedKeys.size();
+        keys.push_back(orderedKeys[i]);
+        orderedKeys.erase(orderedKeys.begin() + i);
+    }
+
+    return keys;
 }
 
 void BinaryTreeTester::check_assign(const BinaryTree* first,

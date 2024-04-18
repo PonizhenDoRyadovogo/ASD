@@ -2,7 +2,8 @@
 #include "treewidget.h"
 #include "ui_treewidget.h"
 #include "GraphicsItemNode.h"
-#include "BinaryTree.cpp"
+#include "../2_BinaryTree/2_BinaryTree/BinaryTree.cpp"
+#include "../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h"
 
 TreeWidget::TreeWidget(QWidget *parent) :
     QWidget(parent),
@@ -13,8 +14,13 @@ TreeWidget::TreeWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->graphicsView->setScene(m_scene);
     m_tree = new BinaryTree();
+    QStringList list_items;
+    list_items<<"BinaryTree"<<"BinaryTreeSearch";
+    ui->comboBox->addItems(list_items);
     connect(ui->pushButtonAdd, &QPushButton::clicked, this, [this](){addKey(ui->spinBox->value());});
     connect(ui->pushButtonDelete, &QPushButton::clicked, this, [this] {removeKey(ui->spinBox->value());});
+    connect(ui->comboBox, &QComboBox::currentTextChanged, this, [this] { changeTree(ui->comboBox->currentIndex()); });
+    connect(ui->pushButtonFind, &QPushButton::clicked, this, [this](){findKey(ui->spinBox->value());});
 }
 
 TreeWidget::~TreeWidget()
@@ -46,7 +52,33 @@ void TreeWidget::removeKey(int key)
     _redrawTree();
 }
 
-QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rightBorderPos, int yPos)
+void TreeWidget::changeTree(int index)
+{
+    std::vector<int> treeVec = m_tree->LRR();
+    delete m_tree;
+    if(index == 0)
+    {
+        m_tree = new BinaryTree;
+    }
+    else if(index == 1)
+    {
+        m_tree = new BinaryTreeSearch;
+    }
+
+    for(int i : treeVec)
+    {
+        m_tree->add(i);
+    }
+    _redrawTree();
+}
+
+void TreeWidget::findKey(int key)
+{
+    BinaryTree::Node* targetNode = m_tree->find(key);
+    _redrawTree(targetNode);
+}
+
+QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rightBorderPos, int yPos, BinaryTree::Node* targetNode)
 {
     if (root == nullptr) {
         return QPointF();
@@ -54,11 +86,17 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
     int xPos = (leftBorderPos + rightBorderPos) / 2;
     GraphicsItemNode *item = new GraphicsItemNode(QString::number(root->getKey()));
     item->setFontSize(m_fontSize);
+
+    if(root == targetNode)
+    {
+        item->setFillColor(Qt::red);
+        item->update();
+    }
     m_scene->addItem(item);
     item->setPos(xPos - item->boundingRect().width() / 2, yPos);
     QPointF center = item->pos() + QPointF(item->boundingRect().center());
-    QPointF leftCenter = _drawTree(root->getLeft(), leftBorderPos, xPos, yPos + 75);
-    QPointF rightCenter = _drawTree(root->getRight(), xPos, rightBorderPos, yPos + 75);
+    QPointF leftCenter = _drawTree(root->getLeft(), leftBorderPos, xPos, yPos + 75, targetNode);
+    QPointF rightCenter = _drawTree(root->getRight(), xPos, rightBorderPos, yPos + 75, targetNode);
 
     if (!leftCenter.isNull()) {
         auto *line = m_scene->addLine(QLineF(center, leftCenter), QPen(Qt::red));
@@ -73,10 +111,10 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
     return center;
 }
 
-void TreeWidget::_redrawTree()
+void TreeWidget::_redrawTree(BinaryTree::Node* targetNode)
 {
     m_scene->clear();
-    _drawTree(m_tree->root(), 0, m_scene->width(), 0);
+    _drawTree(m_tree->root(), 0, m_scene->width(), 0, targetNode);
 }
 
 void TreeWidget::_updateSceneRect()

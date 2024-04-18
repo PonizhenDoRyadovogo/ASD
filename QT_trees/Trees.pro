@@ -9,18 +9,21 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    BinaryTree.cpp \
+    ../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.cpp \
+    ../3_BinaryTreeSearch/3_BinaryTreeSearch/SearchTreeTester.cpp \
+    ../2_BinaryTree/2_BinaryTree/BinaryTree.cpp \
+    ../2_BinaryTree/2_BinaryTree/BinaryTreeTester.cpp \
     GraphicsItemNode.cpp \
-    main.cpp \
-    treewidget.cpp \
-    BinaryTreeTester.cpp
+    QTmain.cpp \
+    treewidget.cpp
 
 HEADERS += \
-    BinaryTree.h \
-    BinaryTreeTester.h \
+    ../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h \
+    ../3_BinaryTreeSearch/3_BinaryTreeSearch/SearchTreeTester.h \
+    ../2_BinaryTree/2_BinaryTree/BinaryTree.h \
+    ../2_BinaryTree/2_BinaryTree/BinaryTreeTester.h \
     GraphicsItemNode.h \
-    treewidget.h \
-    BinaryTreeTester.h
+    treewidget.h
 
 FORMS += \
     treewidget.ui

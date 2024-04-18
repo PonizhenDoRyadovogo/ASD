@@ -22,29 +22,31 @@ public:
 	int height(Node* root) const;
 	Node* find(const int key) const;
 	virtual Node* find(Node* root, const int key) const;
-	virtual Node* add(const int key);
+	Node* add(const int key);
 	virtual bool remove(const int key);
 	virtual Node* parent(const Node* child) const;
 	std::vector<Node*> leafs() const;
-	std::vector<int> treeToVector()const;
+	virtual std::vector<int> treeToVector()const;
 	int size() const;
-	int min() const;
-	int max() const;
+	virtual int min() const;
+	virtual int max() const;
 	int level(const int key) const;
-	int level(Node* root, const int key, int currentLevel) const;
+	virtual int level(Node* root, const int key, int currentLevel) const;
 	void printLeafs() const;
 	Node* root() const;
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 	BinaryTree& operator=(const BinaryTree& other);
+	std::vector<int> LRR()const;
 protected:
 	virtual BinaryTree::Node* _addNode(Node* root, const int key);
-private:
-	Node* _clone(Node* root) const;
-	Node* _clone() const;
 	void _treeToList(std::list<Node*>& nodeList) const;
 	std::vector<Node*> _leafs(Node* root) const;
+	Node* _clone(Node* root) const;
+	void _LRR(Node* root, std::vector<int>& keys)const;
 private:
+	Node* _clone() const;
+protected:
 	Node* m_root = nullptr;
 };
 
