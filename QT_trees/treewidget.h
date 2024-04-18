@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-#include "BinaryTree.h"
+#include "../2_BinaryTree/2_BinaryTree/BinaryTree.h"
 //#include "../../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h"
 class QGraphicsScene;
 

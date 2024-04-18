@@ -2,8 +2,8 @@
 #include "treewidget.h"
 #include "ui_treewidget.h"
 #include "GraphicsItemNode.h"
-#include "BinaryTree.cpp"
-#include "../../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h"
+#include "../2_BinaryTree/2_BinaryTree/BinaryTree.cpp"
+#include "../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h"
 
 TreeWidget::TreeWidget(QWidget *parent) :
     QWidget(parent),
