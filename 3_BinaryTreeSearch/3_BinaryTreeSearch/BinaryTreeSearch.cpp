@@ -126,6 +126,13 @@ bool BinaryTreeSearch::remove(const int key)
     return false;
 }
 
+
+/*
+* @function min
+* @brief find min key in BinaryTreeSearch
+* @return value of minimal key in BinaryTreeSearch.
+* If tree is empty, returned INT_MIN
+*/
 int BinaryTreeSearch::min()const
 {
     if (!m_root)
@@ -142,6 +149,12 @@ int BinaryTreeSearch::min()const
 	return min;
 }
 
+/*
+* @function max
+* @brief find max key in BinaryTreeSearch
+* @return value of maximal key in BinaryTreeSearch.
+* If tree is empty, returned INT_MAX
+*/
 int BinaryTreeSearch::max()const
 {
 	if (!m_root)

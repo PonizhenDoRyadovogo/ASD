@@ -354,7 +354,12 @@ int BinaryTree::size() const
     std::vector<int> vec = treeToVector();
     return vec.size();
 }
-
+/*
+* @function min
+* @brief find min key in BinaryTreeSearch
+* @return value of minimal key in BinaryTreeSearch.
+* If tree is empty, returned INT_MIN
+*/
 int BinaryTree::min() const
 {
     if (!m_root)
@@ -362,7 +367,12 @@ int BinaryTree::min() const
     std::vector<int> vec = treeToVector();
     return vec[0];
 }
-
+/*
+* @function max
+* @brief find max key in BinaryTreeSearch
+* @return value of maximal key in BinaryTreeSearch.
+* If tree is empty, returned INT_MAX
+*/
 int BinaryTree::max() const
 {
     if (!m_root)
