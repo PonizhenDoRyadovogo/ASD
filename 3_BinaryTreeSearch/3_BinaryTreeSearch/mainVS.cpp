@@ -1,9 +1,14 @@
 #include <iostream>
 #include <vector>
 #include "BinaryTreeSearch.h"
-
+#include"SearchTreeTester.h"
 int main()
 {
+	srand(time(0));
+	SearchTreeTester tester(false);
+	tester.test(1000);
+	return 0;
+
 	BinaryTreeSearch foo, goo;
 	int arr[8] = { 50, 70, 60, 20, 30, 90, 100, 10 };
 	for (int i = 0; i < 8; ++i) {

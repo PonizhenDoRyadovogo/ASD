@@ -128,12 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTree.h" />
+    <ClInclude Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTreeTester.h" />
     <ClInclude Include="BinaryTreeSearch.h" />
+    <ClInclude Include="SearchTreeTester.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTree.cpp" />
+    <ClCompile Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTreeTester.cpp" />
     <ClCompile Include="BinaryTreeSearch.cpp" />
     <ClCompile Include="mainVS.cpp" />
+    <ClCompile Include="SearchTreeTester.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
