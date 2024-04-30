@@ -1,3 +1,4 @@
+#include<assert.h>
 #include "BalancedSearchTree.h"
 
 BalancedSearchTree BalancedSearchTree::clone() const
@@ -11,6 +12,23 @@ BalancedSearchTree BalancedSearchTree::clone(Node* root) const
 	BalancedSearchTree newSearchTree;
 	newSearchTree.m_root = _clone(tempTree.root());
 	return newSearchTree;
+}
+
+BinaryTree::Node* BalancedSearchTree::_addNode(Node* root, const int key)
+{
+	if (!root)
+	{
+		root = new Node(key);
+	}
+	else if (key < root->getKey())
+	{
+		root->setLeft(_addNode(root->getLeft(), key));
+	}
+	else if (key > root->getKey())
+	{
+		root->setRight(_addNode(root->getRight(), key));
+	}
+	return root;
 }
 
 //BinaryTree::Node* BalancedSearchTree::_addNode(Node* root, const int key)
@@ -91,8 +109,61 @@ int  BalancedSearchTree::balance(Node* root) const
 //	}
 //}
 
-//
-//void BalancedSearchTree::rightTurn(Node* root)
-//{
-//
-//}
+
+void BalancedSearchTree::rightTurn(Node* root)
+{
+	assert(root->getLeft());
+	Node* bottom = root->getLeft();
+	Node* top = BinaryTreeSearch::parent(root);
+	root->setLeft(bottom->getRight());
+	bottom->setRight(root);
+	if (top)
+	{
+		if (top->getLeft() == root)
+		{
+			top->setLeft(bottom);
+		}
+		else
+		{
+			top->setRight(bottom);
+		}
+	}
+	else//root == m_root
+		m_root = bottom;
+}
+
+void BalancedSearchTree::leftTurn(Node* root)
+{
+	assert(root->getRight());
+	Node* bottom = root->getRight();
+	Node* top = BinaryTreeSearch::parent(root);
+	root->setRight(bottom->getLeft());
+	bottom->setLeft(root);
+	if (top)
+	{
+		if (top->getLeft() == root)
+		{
+			top->setLeft(bottom);
+		}
+		else
+		{
+			top->setRight(bottom);
+		}
+	}
+	else//root == m_root
+		m_root = bottom;
+}
+
+void BalancedSearchTree::doubleTurnLR(Node* root)
+{
+	Node* bottom = root->getLeft();
+	leftTurn(bottom);
+	rightTurn(root);
+}
+
+void BalancedSearchTree::doubleTuenRL(Node* root)
+{
+	Node* bottom = root->getRight();
+	rightTurn(bottom);
+	leftTurn(root);
+}
