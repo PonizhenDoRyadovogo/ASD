@@ -14,50 +14,48 @@ BalancedSearchTree BalancedSearchTree::clone(Node* root) const
 	return newSearchTree;
 }
 
-BinaryTree::Node* BalancedSearchTree::_addNode(Node* root, const int key)
-{
-	if (!root)
-	{
-		root = new Node(key);
-	}
-	else if (key < root->getKey())
-	{
-		root->setLeft(_addNode(root->getLeft(), key));
-	}
-	else if (key > root->getKey())
-	{
-		root->setRight(_addNode(root->getRight(), key));
-	}
-	return root;
-}
-
 //BinaryTree::Node* BalancedSearchTree::_addNode(Node* root, const int key)
 //{
 //	if (!root)
 //	{
 //		root = new Node(key);
-//		m_isFixed = false;
 //	}
 //	else if (key < root->getKey())
 //	{
 //		root->setLeft(_addNode(root->getLeft(), key));
-//		if (!m_isFixed)
-//		{
-//			m_balanceNode = balance(root) - 1;
-//			balancing(root);
-//		}
 //	}
 //	else if (key > root->getKey())
 //	{
 //		root->setRight(_addNode(root->getRight(), key));
-//		if (!m_isFixed)
-//		{
-//			m_balanceNode = balance(root) + 1;
-//			balancing(root);
-//		}
 //	}
 //	return root;
 //}
+
+BinaryTree::Node* BalancedSearchTree::_addNode(Node* root, const int key)
+{
+	if (!root)
+	{
+		root = new Node(key);
+		m_isFixed = false;
+	}
+	else if (key < root->getKey())
+	{
+		root->setLeft(_addNode(root->getLeft(), key));
+		if (!m_isFixed)
+		{
+			balancing(root);
+		}
+	}
+	else if (key > root->getKey())
+	{
+		root->setRight(_addNode(root->getRight(), key));
+		if (!m_isFixed)
+		{
+			balancing(root);
+		}
+	}
+	return root;
+}
 
 int  BalancedSearchTree::balance(Node* root) const
 {
@@ -79,38 +77,39 @@ int  BalancedSearchTree::balance(Node* root) const
 }
 
 
-//void BalancedSearchTree::balancing(Node* root)
-//{
-//	if (m_balanceNode == 0)
-//	{
-//		m_isFixed = true;
-//	}
-//	else if (m_balanceNode == -2)
-//	{
-//		if (balance(root->getLeft()) < 1)
-//		{
-//
-//		}
-//		else
-//		{
-//
-//		}
-//	}
-//	else if (m_balanceNode == 2)
-//	{
-//		if (balance(root->getRight()) > -1)
-//		{
-//
-//		}
-//		else
-//		{
-//
-//		}
-//	}
-//}
+void BalancedSearchTree::balancing(Node*& root)
+{
+	int currentBalance = balance(root);
+	if (currentBalance == 0)
+	{
+		m_isFixed = true;
+	}
+	else if (currentBalance == -2)
+	{
+		if (balance(root->getLeft()) < 1)
+		{
+			rightTurn(root);
+		}
+		else
+		{
+			doubleTurnLR(root);
+		}
+	}
+	else if (currentBalance == 2)
+	{
+		if (balance(root->getRight()) > -1)
+		{
+			leftTurn(root);
+		}
+		else
+		{
+			doubleTurnRL(root);
+		}
+	}
+}
 
 
-void BalancedSearchTree::rightTurn(Node* root)
+void BalancedSearchTree::rightTurn(Node*& root)
 {
 	assert(root->getLeft());
 	Node* bottom = root->getLeft();
@@ -130,9 +129,10 @@ void BalancedSearchTree::rightTurn(Node* root)
 	}
 	else//root == m_root
 		m_root = bottom;
+	root = bottom;
 }
 
-void BalancedSearchTree::leftTurn(Node* root)
+void BalancedSearchTree::leftTurn(Node*& root)
 {
 	assert(root->getRight());
 	Node* bottom = root->getRight();
@@ -152,16 +152,17 @@ void BalancedSearchTree::leftTurn(Node* root)
 	}
 	else//root == m_root
 		m_root = bottom;
+	root = bottom;
 }
 
-void BalancedSearchTree::doubleTurnLR(Node* root)
+void BalancedSearchTree::doubleTurnLR(Node*& root)
 {
 	Node* bottom = root->getLeft();
 	leftTurn(bottom);
 	rightTurn(root);
 }
 
-void BalancedSearchTree::doubleTuenRL(Node* root)
+void BalancedSearchTree::doubleTurnRL(Node*& root)
 {
 	Node* bottom = root->getRight();
 	rightTurn(bottom);
