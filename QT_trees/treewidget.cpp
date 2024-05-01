@@ -4,6 +4,7 @@
 #include "GraphicsItemNode.h"
 #include "../2_BinaryTree/2_BinaryTree/BinaryTree.cpp"
 #include "../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h"
+#include"../4_BalancedSearchTree/4_BalancedSearchTree/BalancedSearchTree.h"
 
 TreeWidget::TreeWidget(QWidget *parent) :
     QWidget(parent),
@@ -15,7 +16,7 @@ TreeWidget::TreeWidget(QWidget *parent) :
     ui->graphicsView->setScene(m_scene);
     m_tree = new BinaryTree();
     QStringList list_items;
-    list_items<<"BinaryTree"<<"BinaryTreeSearch";
+    list_items<<"BinaryTree"<<"BinaryTreeSearch"<<"BalancedSearchTree";
     ui->comboBox->addItems(list_items);
     connect(ui->pushButtonAdd, &QPushButton::clicked, this, [this](){addKey(ui->spinBox->value());});
     connect(ui->pushButtonDelete, &QPushButton::clicked, this, [this] {removeKey(ui->spinBox->value());});
@@ -63,6 +64,10 @@ void TreeWidget::changeTree(int index)
     else if(index == 1)
     {
         m_tree = new BinaryTreeSearch;
+    }
+    else if(index == 2)
+    {
+        m_tree = new BalancedSearchTree;
     }
 
     for(int i : treeVec)
