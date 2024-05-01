@@ -128,13 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTree.h" />
+    <ClInclude Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTreeTester.h" />
     <ClInclude Include="..\..\3_BinaryTreeSearch\3_BinaryTreeSearch\BinaryTreeSearch.h" />
+    <ClInclude Include="..\..\3_BinaryTreeSearch\3_BinaryTreeSearch\SearchTreeTester.h" />
     <ClInclude Include="BalancedSearchTree.h" />
+    <ClInclude Include="BalancedSearchTreeTester.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTree.cpp" />
+    <ClCompile Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTreeTester.cpp" />
     <ClCompile Include="..\..\3_BinaryTreeSearch\3_BinaryTreeSearch\BinaryTreeSearch.cpp" />
+    <ClCompile Include="..\..\3_BinaryTreeSearch\3_BinaryTreeSearch\SearchTreeTester.cpp" />
     <ClCompile Include="BalancedSearchTree.cpp" />
+    <ClCompile Include="BalancedSearchTreeTester.cpp" />
     <ClCompile Include="VSmain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

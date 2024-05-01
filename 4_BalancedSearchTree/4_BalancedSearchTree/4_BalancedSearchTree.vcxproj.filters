@@ -24,6 +24,15 @@
     <ClInclude Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTree.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="BalancedSearchTreeTester.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\3_BinaryTreeSearch\3_BinaryTreeSearch\SearchTreeTester.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTreeTester.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BalancedSearchTree.cpp">
@@ -36,6 +45,15 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="VSmain.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="BalancedSearchTreeTester.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\3_BinaryTreeSearch\3_BinaryTreeSearch\SearchTreeTester.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\2_BinaryTree\2_BinaryTree\BinaryTreeTester.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

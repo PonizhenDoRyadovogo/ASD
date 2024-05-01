@@ -4,10 +4,10 @@
 #include"SearchTreeTester.h"
 int main()
 {
-	/*srand(time(0));
+	srand(time(0));
 	SearchTreeTester tester(false);
 	tester.test(10);
-	return 0;*/
+	return 0;
 
 	BinaryTreeSearch foo, goo;
 	int arr[8] = { 50, 70, 60, 20, 30, 90, 90, 20 };
