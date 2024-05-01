@@ -5,7 +5,7 @@
 class GraphicsItemNode : public QGraphicsSimpleTextItem
 {
 public:
-    GraphicsItemNode(const QString &text,QGraphicsItem *parent = nullptr);
+    GraphicsItemNode(const QString &text, QGraphicsItem *parent = nullptr);
     QColor textColor() const;
     QColor borderColor() const;
     QColor fillColor() const;
@@ -14,6 +14,7 @@ public:
     void setTextColor(const QColor &color) ;
     void setBorderColor(const QColor &color);
     void setFillColor(const QColor &color);
+    //void setBalance(int balance);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
@@ -24,5 +25,6 @@ private:
     QColor m_textColor = Qt::black;
     QColor m_borderColor = Qt::black;
     QColor m_fillColor = Qt::white;
+    //int m_balance = 0;
 };
 

@@ -2,10 +2,16 @@
 #include <QPainter>
 #include <QtMath>
 
-GraphicsItemNode::GraphicsItemNode(const QString &text,QGraphicsItem *parent)
+GraphicsItemNode::GraphicsItemNode(const QString &text, QGraphicsItem *parent)
     :QGraphicsSimpleTextItem(text, parent)
 {
 }
+
+//void GraphicsItemNode::setBalance(int balance)
+//{
+//    m_balance = balance;
+//    update();
+//}
 
 QColor GraphicsItemNode::textColor() const
 {
@@ -49,6 +55,8 @@ void GraphicsItemNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->drawEllipse(boundingRect());
     painter->translate(textRect.x(), textRect.y());
     QGraphicsSimpleTextItem::paint(painter, option, widget);
+//    QPointF balancePosition = boundingRect().topLeft() - QPointF(50, 0);
+//    painter->drawText(balancePosition, QString("%1").arg(m_balance));
 }
 
 void GraphicsItemNode::setFontSize(int size)
@@ -64,6 +72,6 @@ void GraphicsItemNode::setFontSize(int size)
     int width = rect.width() * sqrt(2);
     int height = rect.height() * sqrt(2);
     rect.setWidth(qMax(width,height));
-    rect.setHeight(qMax(width,height));
+    rect.setHeight(qMax(width,height) + 20);
     return rect;
 }
