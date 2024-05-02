@@ -10,9 +10,8 @@ BalancedSearchTree BalancedSearchTree::clone() const
 
 BalancedSearchTree BalancedSearchTree::clone(Node* root) const
 {
-	BinaryTree tempTree = BinaryTree::clone(root);
 	BalancedSearchTree newSearchTree;
-	newSearchTree.m_root = _clone(tempTree.root());
+	newSearchTree.m_root = _clone(root);
 	return newSearchTree;
 }
 

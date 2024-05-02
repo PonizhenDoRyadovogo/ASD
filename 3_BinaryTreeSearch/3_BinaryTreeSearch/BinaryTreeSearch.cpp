@@ -9,9 +9,8 @@ BinaryTreeSearch BinaryTreeSearch::clone() const
 
 BinaryTreeSearch BinaryTreeSearch::clone(Node* root) const
 {
-    BinaryTree tempTree = BinaryTree::clone(root);
 	BinaryTreeSearch newSearchTree;
-	newSearchTree.m_root = _clone(tempTree.root());
+	newSearchTree.m_root = _clone(root);
 	return newSearchTree;
 }
 
