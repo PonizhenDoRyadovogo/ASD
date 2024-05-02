@@ -65,7 +65,11 @@ public:
 
 	int balance() const;
 	void setBalance(const int balance);
+	void incrementBalance();
+	void decrementBalance();
 
+	Node& operator++();
+	Node& operator--();
 private:
 	int m_key = 0;
 	Node* m_left = nullptr;

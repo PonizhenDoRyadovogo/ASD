@@ -27,6 +27,7 @@ BinaryTree::Node* BalancedSearchTree::_addNode(Node* root, const int key)
 		root->setLeft(_addNode(root->getLeft(), key));
 		if (!m_isFixed)
 		{
+			root->decrementBalance();
 			balancing(root);
 		}
 	}
@@ -35,6 +36,7 @@ BinaryTree::Node* BalancedSearchTree::_addNode(Node* root, const int key)
 		root->setRight(_addNode(root->getRight(), key));
 		if (!m_isFixed)
 		{
+			root->incrementBalance();
 			balancing(root);
 		}
 	}
@@ -63,31 +65,35 @@ int  BalancedSearchTree::balance(Node* root) const
 
 void BalancedSearchTree::balancing(Node*& root)
 {
-	int currentBalance = balance(root);
+	int currentBalance = root->balance();
 	if (currentBalance == 0)
 	{
 		m_isFixed = true;
 	}
 	else if (currentBalance == -2)
 	{
-		if (balance(root->getLeft()) < 1)
+		if (root->getLeft()->balance() < 1)
 		{
 			_rightTurn(root);
+			balancing(root);
 		}
 		else
 		{
 			_doubleTurnLR(root);
+			balancing(root);
 		}
 	}
 	else if (currentBalance == 2)
 	{
-		if (balance(root->getRight()) > -1)
+		if (root->getRight()->balance() > -1)
 		{
 			_leftTurn(root);
+			balancing(root);
 		}
 		else
 		{
 			_doubleTurnRL(root);
+			balancing(root);
 		}
 	}
 }
@@ -117,6 +123,35 @@ void BalancedSearchTree::_rightTurn(Node*& root)
 	Node* top = BinaryTreeSearch::parent(root);
 	root->setLeft(bottom->getRight());
 	bottom->setRight(root);
+	
+	//root->setBalance(root->balance() + 1 + std::max(0, -bottom->balance()));
+	//bottom->setBalance(bottom->balance() + 1 + std::max(0, root->balance()));
+
+	if ((bottom->balance() == -1 || bottom->balance() == 0) && root->balance() != -1)
+	{
+		root->setBalance(0);
+		bottom->setBalance(0);
+	}
+	else if(bottom->balance() == 0 && root->balance() == -1)
+	{
+		root->setBalance(0);
+		bottom->setBalance(1);
+	}
+	else if (bottom->balance() == -1 && root->balance() == -1)
+	{
+		bottom->setBalance(1);
+		root->setBalance(1);
+	}
+	else if (bottom->balance() == -2 && root->balance() == -2)
+	{
+		bottom->setBalance(0);
+		root->setBalance(1);
+	}
+	else if (bottom->balance() == 1 && root->balance() == -1)
+	{
+		root->setBalance(0);
+		bottom->setBalance(2);
+	}
 	if (top)
 	{
 		if (top->getLeft() == root)
@@ -140,6 +175,38 @@ void BalancedSearchTree::_leftTurn(Node*& root)
 	Node* top = BinaryTreeSearch::parent(root);
 	root->setRight(bottom->getLeft());
 	bottom->setLeft(root);
+	if (bottom->balance() == 1 && root->balance() == 2)
+	{
+		root->setBalance(0);
+		bottom->setBalance(0);
+	}
+	else if (bottom->balance() == 0 && root->balance() == 2)
+	{
+		root->setBalance(1);
+		bottom->setBalance(-1);
+	}
+	else if (bottom->balance() == 1 && root->balance() == 1)
+	{
+		root->setBalance(-1);
+		bottom->setBalance(-1);
+	}
+	else if (bottom->balance() == -1 && root->balance() == 1)
+	{
+		root->setBalance(0);
+		bottom->setBalance(-2);
+	}
+	else if (bottom->balance() == 0 && root->balance() == 1)
+	{
+		root->setBalance(0);
+		bottom->setBalance(-1);
+	}
+	else if (bottom->balance() == 2 && root->balance() == 2)
+	{
+		root->setBalance(-1);
+		bottom->setBalance(0);
+	}
+	//bottom->setBalance(bottom->balance() - 1 - std::max(0, -root->balance()));
+	//root->setBalance(root->balance() - 1 - std::max(0, bottom->balance()));
 	if (top)
 	{
 		if (top->getLeft() == root)
@@ -153,6 +220,7 @@ void BalancedSearchTree::_leftTurn(Node*& root)
 	}
 	else//root == m_root
 		m_root = bottom;
+	
 	root = bottom;
 }
 
@@ -181,11 +249,13 @@ std::list<BinaryTree::Node*> BalancedSearchTree::_traverseToRemavableNode(const 
 			return traverse;
 		if (currentNode->getKey() > key)
 		{
+			currentNode->incrementBalance();
 			currentNode = currentNode->getLeft();
 			traverse.push_back(currentNode);
 		}
 		else
 		{
+			currentNode->decrementBalance();
 			currentNode = currentNode->getRight();
 			traverse.push_back(currentNode);
 		}
@@ -201,16 +271,32 @@ std::list<BinaryTree::Node*> BalancedSearchTree::_traverseToReplacementNode(std:
 		return list;
 	else if (currentNode->getLeft() && currentNode->getRight())
 	{
-		currentNode = currentNode->getLeft();
-		list.push_back(currentNode);
-		while (currentNode)
+		if (!currentNode->getLeft()->getRight())
 		{
-			if (!currentNode->getRight())
-			{
-				return list;
-			}
-			currentNode = currentNode->getRight();
+			int balanceRemovableNode = currentNode->balance();
+			currentNode = currentNode->getLeft();
+			currentNode->setBalance(balanceRemovableNode);
+			currentNode->incrementBalance();
 			list.push_back(currentNode);
+			return list;
+		}
+		else
+		{
+			currentNode = currentNode->getLeft();
+			list.push_back(currentNode);
+			while (currentNode)
+			{
+				if (!currentNode->getRight())
+				{
+					return list;
+				}
+				else
+				{
+					currentNode->decrementBalance();
+					currentNode = currentNode->getRight();
+					list.push_back(currentNode);
+				}
+			}
 		}
 	}
 	else if (currentNode->getLeft())
@@ -230,7 +316,7 @@ void BalancedSearchTree::balancing(std::list<Node*>& list)
 	if (list.empty())
 		return;
 	Node* currentNode = list.back();
-	int currentBalance = balance(currentNode);
+	int currentBalance = currentNode->balance();
 	if (currentBalance == 0)
 	{
 		list.pop_back();
@@ -238,7 +324,7 @@ void BalancedSearchTree::balancing(std::list<Node*>& list)
 	}
 	else if (currentBalance == -2)
 	{
-		if (balance(currentNode->getLeft()) < 1)
+		if (currentNode->getLeft()->balance() < 1)
 		{
 			_rightTurn(currentNode);
 			list.pop_back();
@@ -253,7 +339,7 @@ void BalancedSearchTree::balancing(std::list<Node*>& list)
 	}
 	else if (currentBalance == 2)
 	{
-		if (balance(currentNode->getRight()) > -1)
+		if (currentNode->getRight()->balance() > -1)
 		{
 			_leftTurn(currentNode);
 			list.pop_back();

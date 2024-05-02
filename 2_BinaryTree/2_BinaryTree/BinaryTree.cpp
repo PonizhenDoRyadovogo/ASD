@@ -498,3 +498,25 @@ void BinaryTree::Node::setBalance(const int balance)
 {
     m_balance = balance;
 }
+
+BinaryTree::Node& BinaryTree::Node::operator++()
+{
+    ++m_balance;
+    return *this;
+}
+
+BinaryTree::Node& BinaryTree::Node::operator--()
+{
+    --m_balance;
+    return *this;
+}
+
+void BinaryTree::Node::incrementBalance()
+{
+    ++m_balance;
+}
+
+void BinaryTree::Node::decrementBalance()
+{
+    --m_balance;
+}

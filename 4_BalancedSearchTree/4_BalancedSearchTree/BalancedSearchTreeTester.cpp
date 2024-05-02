@@ -18,7 +18,8 @@ BinaryTree* BalancedSearchTreeTester::allocateTree()
 void BalancedSearchTreeTester::check_addAndCount(const BinaryTree* tree, const int size)
 {
 	BinaryTreeTester::check_addAndCount(tree, size);
-	assert(tree->isBalanced() && isSearchTree(tree));
+	assert(tree->isBalanced());
+    assert(isSearchTree(tree));
 }
 
 void BalancedSearchTreeTester::check_remove(BinaryTree* tree, const int key, const bool result, const int size)

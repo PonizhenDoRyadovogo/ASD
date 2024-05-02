@@ -25,6 +25,5 @@ protected:
 	void _doubleTurnRL(Node*& root);
 private:
 	bool m_isFixed = false;
-	int m_balanceNode = 0;
 };
 

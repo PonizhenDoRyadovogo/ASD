@@ -5,10 +5,10 @@
 
 int main()
 {
-    srand(time(0));
+    /*srand(time(0));
     BinaryTreeTester tester(false, true);
     tester.test(1000);
-    return 0;
+    return 0;*/
 
     BinaryTree foo, goo;
     {
@@ -19,6 +19,10 @@ int main()
     }
     foo.printHorizontal();
     std::cout << "=======\n";
+    BinaryTree::Node* node = foo.find(0);
+    node->decrementBalance();
+    std::cout << node->balance();
+    return 0;
     for (int i = 0; i < 10; ++i)
     {
         foo.remove(i);

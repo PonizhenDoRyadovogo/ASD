@@ -5,9 +5,9 @@
 
 int main()
 {
-	srand(time(0));
-	BalancedSearchTreeTester tester(false);
-	tester.test(1000);
+	//srand(time(0));
+	BalancedSearchTreeTester tester(true);
+	tester.test(20);
 	return 0;
 
 	BalancedSearchTree foo;
@@ -27,16 +27,20 @@ int main()
 	//std::cout << "=============\n";
 	//foo.remove(8);
 	//foo.printHorizontal();
-	for (int i = 0; i < 30; ++i)
+	for (int i = 1; i < 30; ++i)
 	{
 		foo.add(i);
+		/*foo.printHorizontal();
+		if (foo.isBalanced())
+			std::cout << "\ntrue\n";
+		std::cout << "=============\n";*/
 	}
 	foo.printHorizontal();
 	std::cout << "=============\n";
-	for (int i = 0; i < 30; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		foo.remove(i);
-		foo.printHorizontal();
+		//foo.printHorizontal();
 		if (foo.isBalanced())
 			std::cout << "\n true\n";
 		std::cout << "=============\n";
