@@ -13,11 +13,11 @@ public:
 	BalancedSearchTree clone(Node* root) const;
 	void balancing(Node*& root);
 	bool remove(const int key) override;
-	void balancing(std::list<Node*>& list);
+	void balancing();
 private:
 	Node* _addNode(Node* root, const int key) override;
-	std::list<Node*> _traverseToRemavableNode(const int key) const;
-	std::list<Node*> _traverseToReplacementNode(std::list<Node*>& list)const;
+	bool _traverseToRemavableNode(const int key);
+	bool _traverseToReplacementNode();
 protected:
 	void _rightTurn(Node*& root);
 	void _leftTurn(Node*& root);
@@ -25,5 +25,23 @@ protected:
 	void _doubleTurnRL(Node*& root);
 private:
 	bool m_isFixed = false;
+
+	enum ChildType
+	{
+		Left = -1,
+		NoParent = 0,
+		Right = 1
+	};
+	struct TraverseInfo
+	{
+		Node* root = nullptr;
+		ChildType child = NoParent;
+
+		TraverseInfo(Node* root = nullptr, ChildType child = NoParent)
+			: root(root)
+			, child(child)
+		{}
+	};
+	std::list<TraverseInfo> m_info;
 };
 

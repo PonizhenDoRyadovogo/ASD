@@ -100,20 +100,36 @@ void BalancedSearchTree::balancing(Node*& root)
 
 bool BalancedSearchTree::remove(const int key) 
 {
-	std::list<Node*> traverseToReplacement;
-	traverseToReplacement = _traverseToRemavableNode(key);
-	if (traverseToReplacement.empty())//a node with a key equal to the key is not in the tree
+	if (!_traverseToRemavableNode(key))//a node with a key equal to the key is not in the tree
 		return false;
-	Node* removableNode = traverseToReplacement.back();
-	traverseToReplacement = _traverseToReplacementNode(traverseToReplacement);
-	auto iteratorRemovableNode = traverseToReplacement.begin();
-	for (; *iteratorRemovableNode != removableNode; ++iteratorRemovableNode);
-	auto iteratorReplacementNode = --traverseToReplacement.end();
+	Node* removableNode = m_info.back().root;
+	_traverseToReplacementNode();
+	auto iteratorRemovableNode = m_info.begin();
+	for (; iteratorRemovableNode->root != removableNode; ++iteratorRemovableNode);
+	auto iteratorReplacementNode = --m_info.end();
+	iteratorReplacementNode->child = iteratorRemovableNode->child;
+	iteratorReplacementNode->root->setBalance(iteratorRemovableNode->root->balance());
 	std::swap(*iteratorRemovableNode, *iteratorReplacementNode);
 	BinaryTreeSearch::remove(key);
-	traverseToReplacement.pop_back();
-	balancing(traverseToReplacement);
+	m_info.pop_back();
+	m_isFixed = false;
+	balancing();
 	return true;
+
+	//std::list<Node*> traverseToReplacement;
+	//traverseToReplacement = _traverseToRemavableNode(key);
+	//if (traverseToReplacement.empty())//a node with a key equal to the key is not in the tree
+	//	return false;
+	//Node* removableNode = traverseToReplacement.back();
+	//traverseToReplacement = _traverseToReplacementNode(traverseToReplacement);
+	//auto iteratorRemovableNode = traverseToReplacement.begin();
+	//for (; *iteratorRemovableNode != removableNode; ++iteratorRemovableNode);
+	//auto iteratorReplacementNode = --traverseToReplacement.end();
+	//std::swap(*iteratorRemovableNode, *iteratorReplacementNode);
+	//BinaryTreeSearch::remove(key);
+	//traverseToReplacement.pop_back();
+	//balancing(traverseToReplacement);
+	//return true;
 }
 
 void BalancedSearchTree::_rightTurn(Node*& root)
@@ -238,82 +254,123 @@ void BalancedSearchTree::_doubleTurnRL(Node*& root)
 	_leftTurn(root);
 }
 
-std::list<BinaryTree::Node*> BalancedSearchTree::_traverseToRemavableNode(const int key) const
+bool BalancedSearchTree::_traverseToRemavableNode(const int key)
 {
-	std::list<Node*> traverse;
-	traverse.push_back(m_root);
+	if (m_root->getKey() == key)
+	{
+		m_info.push_back({ m_root, NoParent });
+		return true;
+	}
 	Node* currentNode = m_root;
 	while (currentNode)
 	{
 		if (currentNode->getKey() == key)
-			return traverse;
-		if (currentNode->getKey() > key)
 		{
-			currentNode->incrementBalance();
+			if (currentNode->getLeft() && currentNode->getRight())
+			{
+				m_info.push_back({ currentNode, Left });//have 2 child => we go to left
+			}
+			else if (currentNode->getLeft())
+			{
+				m_info.push_back({ currentNode, Left });//have one child on left
+			}
+			else if (currentNode->getRight())
+			{
+				m_info.push_back({ currentNode, Right });//have one child in right
+			}
+			else
+			{
+				m_info.push_back({ currentNode, NoParent });//leaf
+			}
+			return true;
+		}
+		else if (currentNode->getKey() > key)
+		{
+			m_info.push_back({currentNode, Left});
 			currentNode = currentNode->getLeft();
-			traverse.push_back(currentNode);
 		}
 		else
 		{
-			currentNode->decrementBalance();
+			m_info.push_back({ currentNode, Right });
 			currentNode = currentNode->getRight();
-			traverse.push_back(currentNode);
 		}
 	}
-	traverse.clear();
-	return traverse;
+	m_info.clear();
+	return false;
 }
 
-std::list<BinaryTree::Node*> BalancedSearchTree::_traverseToReplacementNode(std::list<Node*>& list)const
+bool BalancedSearchTree::_traverseToReplacementNode()
 {
-	Node* currentNode = list.back();
+	Node* currentNode = m_info.back().root;//removable node
 	if (!currentNode->getLeft() && !currentNode->getRight())//removable node is leaf
-		return list;
+		return true;
 	else if (currentNode->getLeft() && currentNode->getRight())
 	{
-		if (!currentNode->getLeft()->getRight())
+		currentNode = currentNode->getLeft();
+		while (currentNode)
 		{
-			int balanceRemovableNode = currentNode->balance();
-			currentNode = currentNode->getLeft();
-			currentNode->setBalance(balanceRemovableNode);
-			currentNode->incrementBalance();
-			list.push_back(currentNode);
-			return list;
-		}
-		else
-		{
-			currentNode = currentNode->getLeft();
-			list.push_back(currentNode);
-			while (currentNode)
+			if (!currentNode->getRight())
 			{
-				if (!currentNode->getRight())
-				{
-					return list;
-				}
-				else
-				{
-					currentNode->decrementBalance();
-					currentNode = currentNode->getRight();
-					list.push_back(currentNode);
-				}
+				m_info.push_back({ currentNode, NoParent });
+				return true;
+			}
+			else
+			{
+				m_info.push_back({ currentNode, Right });
+				currentNode = currentNode->getRight();
 			}
 		}
 	}
 	else if (currentNode->getLeft())
 	{
-		list.push_back(currentNode->getLeft());
-		return list;
+		m_info.push_back({currentNode->getLeft()});
+		return true;
 	}
 	else
 	{
-		list.push_back(currentNode->getRight());
-		return list;
+		m_info.push_back({ currentNode->getRight() });
+		return true;
 	}
 }
 
-void BalancedSearchTree::balancing(std::list<Node*>& list)
+void BalancedSearchTree::balancing()
 {
-	if (list.empty())
+	if (m_info.empty())
+		return;
+	if (!m_isFixed)
+	{
+		if (m_info.back().child == Left)
+		{
+			m_info.back().root->incrementBalance();
+		}
+		else if (m_info.back().child == Right)
+		{
+			m_info.back().root->decrementBalance();
+		}
+
+		if (m_info.back().root->balance() == 0)
+		{
+			m_info.pop_back();
+			balancing();
+		}
+		else if (m_info.back().root->balance() == -2)
+		{
+			if (m_info.back().root->getLeft()->balance() < 1)
+			{
+				_rightTurn(m_info.back().root);
+				if (m_info.back().root == 0)
+				{
+					m_info.pop_back();
+					balancing();
+				}
+				else
+					balancing();
+			}
+		}
+	}
+
+
+	/*if (list.empty())
 		return;
 	Node* currentNode = list.back();
 	int currentBalance = currentNode->balance();
@@ -351,5 +408,5 @@ void BalancedSearchTree::balancing(std::list<Node*>& list)
 			list.pop_back();
 			balancing(list);
 		}
-	}
+	}*/
 }
