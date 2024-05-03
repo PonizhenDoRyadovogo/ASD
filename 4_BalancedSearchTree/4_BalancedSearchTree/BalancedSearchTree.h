@@ -8,17 +8,17 @@ class BalancedSearchTree : public BinaryTreeSearch
 public:
 	BalancedSearchTree() = default;
 	~BalancedSearchTree() override = default;
-	int balance(Node* root) const;
 	BalancedSearchTree clone() const;
 	BalancedSearchTree clone(Node* root) const;
-	void balancing(Node*& root);
 	bool remove(const int key) override;
-	void balancing();
+	int balance(Node* root) const;
 private:
 	Node* _addNode(Node* root, const int key) override;
 	bool _traverseToRemavableNode(const int key);
 	bool _traverseToReplacementNode();
 protected:
+	void balancing(Node*& root);
+	void balancing();
 	void _rightTurn(Node*& root);
 	void _leftTurn(Node*& root);
 	void _doubleTurnLR(Node*& root);

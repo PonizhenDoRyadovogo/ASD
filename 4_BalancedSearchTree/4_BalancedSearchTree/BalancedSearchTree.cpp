@@ -115,21 +115,6 @@ bool BalancedSearchTree::remove(const int key)
 	m_isFixed = false;
 	balancing();
 	return true;
-
-	//std::list<Node*> traverseToReplacement;
-	//traverseToReplacement = _traverseToRemavableNode(key);
-	//if (traverseToReplacement.empty())//a node with a key equal to the key is not in the tree
-	//	return false;
-	//Node* removableNode = traverseToReplacement.back();
-	//traverseToReplacement = _traverseToReplacementNode(traverseToReplacement);
-	//auto iteratorRemovableNode = traverseToReplacement.begin();
-	//for (; *iteratorRemovableNode != removableNode; ++iteratorRemovableNode);
-	//auto iteratorReplacementNode = --traverseToReplacement.end();
-	//std::swap(*iteratorRemovableNode, *iteratorReplacementNode);
-	//BinaryTreeSearch::remove(key);
-	//traverseToReplacement.pop_back();
-	//balancing(traverseToReplacement);
-	//return true;
 }
 
 void BalancedSearchTree::_rightTurn(Node*& root)
@@ -139,35 +124,6 @@ void BalancedSearchTree::_rightTurn(Node*& root)
 	Node* top = BinaryTreeSearch::parent(root);
 	root->setLeft(bottom->getRight());
 	bottom->setRight(root);
-	
-	//root->setBalance(root->balance() + 1 + std::max(0, -bottom->balance()));
-	//bottom->setBalance(bottom->balance() + 1 + std::max(0, root->balance()));
-
-	if ((bottom->balance() == -1 || bottom->balance() == 0) && root->balance() != -1)
-	{
-		root->setBalance(0);
-		bottom->setBalance(0);
-	}
-	else if(bottom->balance() == 0 && root->balance() == -1)
-	{
-		root->setBalance(0);
-		bottom->setBalance(1);
-	}
-	else if (bottom->balance() == -1 && root->balance() == -1)
-	{
-		bottom->setBalance(1);
-		root->setBalance(1);
-	}
-	else if (bottom->balance() == -2 && root->balance() == -2)
-	{
-		bottom->setBalance(0);
-		root->setBalance(1);
-	}
-	else if (bottom->balance() == 1 && root->balance() == -1)
-	{
-		root->setBalance(0);
-		bottom->setBalance(2);
-	}
 	if (top)
 	{
 		if (top->getLeft() == root)
@@ -181,6 +137,8 @@ void BalancedSearchTree::_rightTurn(Node*& root)
 	}
 	else//root == m_root
 		m_root = bottom;
+	root->setBalance(root->balance() + 1 + std::max(0, -bottom->balance()));
+	bottom->setBalance(bottom->balance() + 1 + std::max(0, root->balance()));
 	root = bottom;
 }
 
@@ -191,38 +149,6 @@ void BalancedSearchTree::_leftTurn(Node*& root)
 	Node* top = BinaryTreeSearch::parent(root);
 	root->setRight(bottom->getLeft());
 	bottom->setLeft(root);
-	if (bottom->balance() == 1 && root->balance() == 2)
-	{
-		root->setBalance(0);
-		bottom->setBalance(0);
-	}
-	else if (bottom->balance() == 0 && root->balance() == 2)
-	{
-		root->setBalance(1);
-		bottom->setBalance(-1);
-	}
-	else if (bottom->balance() == 1 && root->balance() == 1)
-	{
-		root->setBalance(-1);
-		bottom->setBalance(-1);
-	}
-	else if (bottom->balance() == -1 && root->balance() == 1)
-	{
-		root->setBalance(0);
-		bottom->setBalance(-2);
-	}
-	else if (bottom->balance() == 0 && root->balance() == 1)
-	{
-		root->setBalance(0);
-		bottom->setBalance(-1);
-	}
-	else if (bottom->balance() == 2 && root->balance() == 2)
-	{
-		root->setBalance(-1);
-		bottom->setBalance(0);
-	}
-	//bottom->setBalance(bottom->balance() - 1 - std::max(0, -root->balance()));
-	//root->setBalance(root->balance() - 1 - std::max(0, bottom->balance()));
 	if (top)
 	{
 		if (top->getLeft() == root)
@@ -236,7 +162,8 @@ void BalancedSearchTree::_leftTurn(Node*& root)
 	}
 	else//root == m_root
 		m_root = bottom;
-	
+	root->setBalance(root->balance() - 1 - std::max(0, bottom->balance()));
+	bottom->setBalance(bottom->balance() - 1 - std::max(0, -root->balance()));
 	root = bottom;
 }
 
@@ -256,11 +183,6 @@ void BalancedSearchTree::_doubleTurnRL(Node*& root)
 
 bool BalancedSearchTree::_traverseToRemavableNode(const int key)
 {
-	if (m_root->getKey() == key)
-	{
-		m_info.push_back({ m_root, NoParent });
-		return true;
-	}
 	Node* currentNode = m_root;
 	while (currentNode)
 	{
@@ -335,78 +257,59 @@ bool BalancedSearchTree::_traverseToReplacementNode()
 
 void BalancedSearchTree::balancing()
 {
-	if (m_info.empty())
-		return;
-	if (!m_isFixed)
+	while (!m_info.empty())
 	{
-		if (m_info.back().child == Left)
+		if (!m_isFixed)
 		{
-			m_info.back().root->incrementBalance();
-		}
-		else if (m_info.back().child == Right)
-		{
-			m_info.back().root->decrementBalance();
-		}
-
-		if (m_info.back().root->balance() == 0)
-		{
-			m_info.pop_back();
-			balancing();
-		}
-		else if (m_info.back().root->balance() == -2)
-		{
-			if (m_info.back().root->getLeft()->balance() < 1)
+			if (m_info.back().child == Left)
 			{
-				_rightTurn(m_info.back().root);
-				if (m_info.back().root == 0)
+				m_info.back().root->incrementBalance();
+			}
+			else if (m_info.back().child == Right)
+			{
+				m_info.back().root->decrementBalance();
+			}
+
+			for (;;)
+			{
+				if (m_info.back().root->balance() == -1 || m_info.back().root->balance() == 1)
+				{
+					m_isFixed = true;
+					m_info.pop_back();
+					break;
+				}
+				else if (m_info.back().root->balance() == 0)
 				{
 					m_info.pop_back();
-					balancing();
+					break;
 				}
-				else
-					balancing();
+				else if (m_info.back().root->balance() == -2)
+				{
+					if (m_info.back().root->getLeft()->balance() < 1)
+					{
+						_rightTurn(m_info.back().root);
+					}
+					else
+					{
+						_doubleTurnLR(m_info.back().root);
+					}
+				}
+				else if (m_info.back().root->balance() == 2)
+				{
+					if (m_info.back().root->getRight()->balance() > -1)
+					{
+						_leftTurn(m_info.back().root);
+					}
+					else
+					{
+						_doubleTurnRL(m_info.back().root);
+					}
+				}
 			}
 		}
-	}
-
-
-	/*if (list.empty())
-		return;
-	Node* currentNode = list.back();
-	int currentBalance = currentNode->balance();
-	if (currentBalance == 0)
-	{
-		list.pop_back();
-		balancing(list);
-	}
-	else if (currentBalance == -2)
-	{
-		if (currentNode->getLeft()->balance() < 1)
-		{
-			_rightTurn(currentNode);
-			list.pop_back();
-			balancing(list);
-		}
 		else
 		{
-			_doubleTurnLR(currentNode);
-			list.pop_back();
-			balancing(list);
+			m_info.pop_back();
 		}
 	}
-	else if (currentBalance == 2)
-	{
-		if (currentNode->getRight()->balance() > -1)
-		{
-			_leftTurn(currentNode);
-			list.pop_back();
-			balancing(list);
-		}
-		else
-		{
-			_doubleTurnRL(currentNode);
-			list.pop_back();
-			balancing(list);
-		}
-	}*/
 }
