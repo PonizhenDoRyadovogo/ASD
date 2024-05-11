@@ -84,15 +84,15 @@ void TreeWidget::findKey(int key)
     _redrawTree(targetNode);
 }
 
-int TreeWidget::calculateBalance(BinaryTree::Node* root)
-{
-    if (root == nullptr) {
-        return 0;
-    }
-    int leftHeight = (root->getLeft() != nullptr) ? m_tree->height(root->getLeft()) : 0;
-    int rightHeight = (root->getRight() != nullptr) ? m_tree->height(root->getRight()) : 0;
-    return rightHeight - leftHeight;
-}
+//int TreeWidget::calculateBalance(BinaryTree::Node* root)
+//{
+//    if (root == nullptr) {
+//        return 0;
+//    }
+//    int leftHeight = (root->getLeft() != nullptr) ? m_tree->height(root->getLeft()) : 0;
+//    int rightHeight = (root->getRight() != nullptr) ? m_tree->height(root->getRight()) : 0;
+//    return rightHeight - leftHeight;
+//}
 
 QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rightBorderPos, int yPos, BinaryTree::Node* targetNode)
 {
@@ -130,6 +130,7 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
 void TreeWidget::_redrawTree(BinaryTree::Node* targetNode)
 {
     m_scene->clear();
+   //m_scene->update();
     _drawTree(m_tree->root(), 0, m_scene->width(), 0, targetNode);
 }
 

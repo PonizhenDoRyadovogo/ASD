@@ -23,7 +23,7 @@ public slots:
     void removeKey(int key);
     void changeTree(int index);
     void findKey(int key);
-    int calculateBalance(BinaryTree::Node* root);
+    //int calculateBalance(BinaryTree::Node* root);
     void clearScene();
 protected:
     void resizeEvent(QResizeEvent *event)override;
