@@ -4,15 +4,10 @@
 
 #include"HuffmanTree.h"
 
-void makeFile(std::string name)
-{
-	std::ofstream originFile(name);
-	originFile.close();
-}
-
 int main()
 {
-	std::string name = "test.txt";
-	makeFile(name);
+	HuffmanTree foo;
+	std::string str = "Hello World";
+	foo.build(str);
 	return 0;
 }
