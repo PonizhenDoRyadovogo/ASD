@@ -4,6 +4,7 @@
 #include "GraphicsItemNode.h"
 #include "../2_BinaryTree/2_BinaryTree/BinaryTree.cpp"
 #include "../3_BinaryTreeSearch/3_BinaryTreeSearch/BinaryTreeSearch.h"
+#include"../4_BalancedSearchTree/4_BalancedSearchTree/BalancedSearchTree.h"
 
 TreeWidget::TreeWidget(QWidget *parent) :
     QWidget(parent),
@@ -15,12 +16,13 @@ TreeWidget::TreeWidget(QWidget *parent) :
     ui->graphicsView->setScene(m_scene);
     m_tree = new BinaryTree();
     QStringList list_items;
-    list_items<<"BinaryTree"<<"BinaryTreeSearch";
+    list_items<<"BinaryTree"<<"BinaryTreeSearch"<<"BalancedSearchTree";
     ui->comboBox->addItems(list_items);
     connect(ui->pushButtonAdd, &QPushButton::clicked, this, [this](){addKey(ui->spinBox->value());});
     connect(ui->pushButtonDelete, &QPushButton::clicked, this, [this] {removeKey(ui->spinBox->value());});
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, [this] { changeTree(ui->comboBox->currentIndex()); });
     connect(ui->pushButtonFind, &QPushButton::clicked, this, [this](){findKey(ui->spinBox->value());});
+    connect(ui->pushButtonClear, &QPushButton::clicked, this, [this](){clearScene();});
 }
 
 TreeWidget::~TreeWidget()
@@ -64,6 +66,10 @@ void TreeWidget::changeTree(int index)
     {
         m_tree = new BinaryTreeSearch;
     }
+    else if(index == 2)
+    {
+        m_tree = new BalancedSearchTree;
+    }
 
     for(int i : treeVec)
     {
@@ -78,6 +84,16 @@ void TreeWidget::findKey(int key)
     _redrawTree(targetNode);
 }
 
+//int TreeWidget::calculateBalance(BinaryTree::Node* root)
+//{
+//    if (root == nullptr) {
+//        return 0;
+//    }
+//    int leftHeight = (root->getLeft() != nullptr) ? m_tree->height(root->getLeft()) : 0;
+//    int rightHeight = (root->getRight() != nullptr) ? m_tree->height(root->getRight()) : 0;
+//    return rightHeight - leftHeight;
+//}
+
 QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rightBorderPos, int yPos, BinaryTree::Node* targetNode)
 {
     if (root == nullptr) {
@@ -86,7 +102,7 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
     int xPos = (leftBorderPos + rightBorderPos) / 2;
     GraphicsItemNode *item = new GraphicsItemNode(QString::number(root->getKey()));
     item->setFontSize(m_fontSize);
-
+    //item->setBalance(calculateBalance(root));
     if(root == targetNode)
     {
         item->setFillColor(Qt::red);
@@ -114,6 +130,7 @@ QPointF TreeWidget::_drawTree(BinaryTree::Node *root, int leftBorderPos, int rig
 void TreeWidget::_redrawTree(BinaryTree::Node* targetNode)
 {
     m_scene->clear();
+   //m_scene->update();
     _drawTree(m_tree->root(), 0, m_scene->width(), 0, targetNode);
 }
 
@@ -121,4 +138,9 @@ void TreeWidget::_updateSceneRect()
 {
     m_scene->setSceneRect(0, 0, qMax(int(m_scene->width()), ui->graphicsView->viewport()->width()),qMax(int(m_scene->height()), ui->graphicsView->viewport()->height()));
     _redrawTree();
+}
+
+void TreeWidget::clearScene()
+{
+    m_scene->clear();
 }

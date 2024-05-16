@@ -53,20 +53,27 @@ protected:
 class BinaryTree::Node
 {
 public:
-	Node(int key = 0, Node* left = nullptr, Node* right = nullptr);
+	Node(int key = 0, Node* left = nullptr, Node* right = nullptr, int balance = 0);
 	~Node() = default;
 
 	int getKey() const;
 	void setKey(int key);
-
 	Node* getLeft();
 	Node* getRight();
 	void setLeft(Node* left);
 	void setRight(Node* right);
 
+	int balance() const;
+	void setBalance(const int balance);
+	void incrementBalance();
+	void decrementBalance();
+
+	Node& operator++();
+	Node& operator--();
 private:
 	int m_key = 0;
 	Node* m_left = nullptr;
 	Node* m_right = nullptr;
+	int m_balance = 0;
 };
 

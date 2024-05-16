@@ -1,13 +1,11 @@
 #pragma once
+#include "..\..\3_BinaryTreeSearch\3_BinaryTreeSearch\SearchTreeTester.h"
 
-#include"..\..\2_BinaryTree\2_BinaryTree\BinaryTreeTester.h"
-
-
-class SearchTreeTester : public BinaryTreeTester
+class BalancedSearchTreeTester : public SearchTreeTester
 {
 public:
-	SearchTreeTester(const bool useConsoleOutput, const bool enableAllTests = true);
-    ~SearchTreeTester() override = default;
+	BalancedSearchTreeTester(const bool useConsoleOutput, const bool enableAllTests = true);
+	~BalancedSearchTreeTester() override = default;
 protected:
     BinaryTree* allocateTree()override;
     void check_addAndCount(const BinaryTree* tree, const int size)override;
@@ -15,9 +13,5 @@ protected:
     void check_clear(const BinaryTree* tree, const int size)override;
     void check_assign(const BinaryTree* first, const BinaryTree* second)override;
     void assign() override;
-    bool isSearchTree(const BinaryTree* tree);
-private:
-    void treeKeysLnr(BinaryTree::Node* root, std::vector<int>& keys);
 };
 
-    

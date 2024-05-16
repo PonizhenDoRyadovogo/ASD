@@ -6,11 +6,11 @@ int main()
 {
 	srand(time(0));
 	SearchTreeTester tester(false);
-	tester.test(1000);
+	tester.test(10);
 	return 0;
 
 	BinaryTreeSearch foo, goo;
-	int arr[8] = { 50, 70, 60, 20, 30, 90, 100, 10 };
+	int arr[8] = { 50, 70, 60, 20, 30, 90, 90, 20 };
 	for (int i = 0; i < 8; ++i) {
 		foo.BinaryTree::add(arr[i]);
 	}

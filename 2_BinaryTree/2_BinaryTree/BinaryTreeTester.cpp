@@ -123,6 +123,10 @@ void BinaryTreeTester::addAndCount()
     for (int i = 0; i < m_maxSize; ++i) 
     {
         tree->add(nodeKeys[i]);
+        if (m_useConsoleOutput) {
+            tree->printHorizontal();
+            std::cout << "===================\n";
+        }
         check_addAndCount(tree, i + 1);
     }
 
@@ -167,6 +171,11 @@ void BinaryTreeTester::remove()
     std::vector<int> nodeKeys = generateKeys();
     for (int i = 0; i < m_maxSize; ++i) {
         tree->add(nodeKeys[i]);
+    }
+
+    if (m_useConsoleOutput) {
+        tree->printHorizontal();
+        std::cout << "===================\n";
     }
 
     while (!nodeKeys.empty()) {

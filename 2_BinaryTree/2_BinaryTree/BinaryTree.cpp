@@ -451,10 +451,11 @@ void BinaryTree::_LRR(Node* root, std::vector<int>& keys)const
     _LRR(root->getRight(), keys);
 }
 
-BinaryTree::Node::Node(int key, Node* left, Node* right)
+BinaryTree::Node::Node(int key, Node* left, Node* right, int balance)
 	: m_key(key)
 	, m_left(left)
 	, m_right(right)
+    , m_balance(balance)
 {
 }
 
@@ -488,3 +489,34 @@ void BinaryTree::Node::setRight(Node* right)
     m_right = right;
 }
 
+int BinaryTree::Node::balance() const
+{
+    return m_balance;
+}
+
+void BinaryTree::Node::setBalance(const int balance)
+{
+    m_balance = balance;
+}
+
+BinaryTree::Node& BinaryTree::Node::operator++()
+{
+    ++m_balance;
+    return *this;
+}
+
+BinaryTree::Node& BinaryTree::Node::operator--()
+{
+    --m_balance;
+    return *this;
+}
+
+void BinaryTree::Node::incrementBalance()
+{
+    ++m_balance;
+}
+
+void BinaryTree::Node::decrementBalance()
+{
+    --m_balance;
+}

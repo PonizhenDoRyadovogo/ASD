@@ -13,6 +13,8 @@ SOURCES += \
     ../3_BinaryTreeSearch/3_BinaryTreeSearch/SearchTreeTester.cpp \
     ../2_BinaryTree/2_BinaryTree/BinaryTree.cpp \
     ../2_BinaryTree/2_BinaryTree/BinaryTreeTester.cpp \
+    ../4_BalancedSearchTree/4_BalancedSearchTree/BalancedSearchTree.cpp \
+    ../4_BalancedSearchTree/4_BalancedSearchTree/BalancedSearchTreeTester.cpp \
     GraphicsItemNode.cpp \
     QTmain.cpp \
     treewidget.cpp
@@ -22,6 +24,8 @@ HEADERS += \
     ../3_BinaryTreeSearch/3_BinaryTreeSearch/SearchTreeTester.h \
     ../2_BinaryTree/2_BinaryTree/BinaryTree.h \
     ../2_BinaryTree/2_BinaryTree/BinaryTreeTester.h \
+    ../4_BalancedSearchTree/4_BalancedSearchTree/BalancedSearchTree.h \
+    ../4_BalancedSearchTree/4_BalancedSearchTree/BalancedSearchTreeTester.h \
     GraphicsItemNode.h \
     treewidget.h
 
