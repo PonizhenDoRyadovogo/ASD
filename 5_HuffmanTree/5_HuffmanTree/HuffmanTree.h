@@ -14,6 +14,8 @@ public:
 	~HuffmanTree();
 	void clear(Node* root);
 	void build(std::string& text);
+	void printHorizontal(int levelSpacing = 4) const;
+	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 private:
 	Node* m_root = nullptr;
 };

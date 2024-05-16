@@ -46,6 +46,16 @@ void HuffmanTree::build(std::string& text)
 			}
 		}
 	}
+	//////////////
+	/*for (std::list<Node*>::iterator it = nodeList.begin(); it != nodeList.end(); ++it)
+	{
+		for (int i = 0; i < 256; ++i)
+		{
+			if ((*it)->symbols()[i])
+				std::cout << static_cast<char>(i) << " ";
+		}
+	}*/
+	/////////////
 	while (nodeList.size() > 1)
 	{
 		Node* left = nodeList.front();
@@ -118,4 +128,24 @@ void HuffmanTree::Node::setLeft(Node* left)
 void HuffmanTree::Node::setRight(Node* right)
 {
 	m_right = right;
+}
+
+void HuffmanTree::printHorizontal(int levelSpacing) const
+{
+	printHorizontal(m_root, 0, levelSpacing);
+}
+
+void HuffmanTree::printHorizontal(Node * root, int marginLeft, int levelSpacing) const
+{
+	if (root == nullptr) {
+		return;
+	}
+
+	printHorizontal(root->right(), marginLeft + levelSpacing, levelSpacing);
+	for (int i = 0; i < 256; ++i)
+	{
+		if(root->symbols()[i] == true)
+			std::cout << std::string(marginLeft, ' ') << (char)(i) << std::endl;
+	}
+	printHorizontal(root->left(), marginLeft + levelSpacing, levelSpacing);
 }
