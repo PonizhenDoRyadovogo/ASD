@@ -16,6 +16,7 @@ public:
 	void clear(Node* root);
 	void build(const std::string& inputFilename);
 	float encode(const std::string& inputFilename, const std::string& outputFilename);
+	bool decode(const std::string& encodedFilename, const std::string& decodedFilename);
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
 private:

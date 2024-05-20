@@ -125,7 +125,11 @@ float HuffmanTree::encode(const std::string& inputFilename, const std::string& o
 	inputFile >> ch;
 	while (!inputFile.eof())
 	{
-		_encode(ch, code, pos);
+		if (!_encode(ch, code, pos))
+		{
+			perror("The function is called by another tree. Encoding is impossible or incorrect");
+			return 0;
+		}
 		unsigned char* symb = code.getCells();
 		for (int i = 0; i < (pos / 8); ++i)
 		{
@@ -166,6 +170,11 @@ bool HuffmanTree::_encode(const char symbol, BoolVector& code, int& pos)
 		}
 	}
 	return true;
+}
+
+bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& decodedFilename)
+{
+	return true; //ToDo
 }
 
 void HuffmanTree::clear(Node* root)
