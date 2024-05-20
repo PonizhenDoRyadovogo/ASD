@@ -3,28 +3,55 @@
 #include<vector>
 #include "HuffmanTree.h"
 
+int countBitsFile(std::string fileName)
+{
+	std::ifstream file(fileName);
+	if (!file.is_open())
+	{
+		return -1;
+	}
+	unsigned char ch;
+	int i = 0;
+	file >> ch;
+	++i;
+	while (!file.eof())
+	{
+		file >> ch;
+		++i;
+	}
+	return (i * 8);
+}
+
 HuffmanTree::~HuffmanTree()
 {
 	clear(m_root);
 	m_root = nullptr;
 }
 
-void HuffmanTree::build(std::string& text)
+void HuffmanTree::build(const std::string& inputFilename)
 {
 	if (m_root)
 	{
 		clear(m_root);
 	}
-	if (text.empty())
+
+	std::ifstream inputFile(inputFilename);
+	if (!inputFile.is_open())
 	{
 		return;
 	}
 	std::list<Node*> nodeList;
 	std::vector<int> tab(256, 0);
-	for (unsigned char ch: text)
+	unsigned char ch;
+	inputFile >> std::noskipws;
+	inputFile >> ch;
+	while (!inputFile.eof())
 	{
 		tab[ch]++;
+		inputFile >> ch;
 	}
+	inputFile.close();
+	m_tab = tab;
 	//create list of Node
 	for(int i = 0; i < 256; ++i)
 	{
@@ -46,16 +73,7 @@ void HuffmanTree::build(std::string& text)
 			}
 		}
 	}
-	//////////////
-	/*for (std::list<Node*>::iterator it = nodeList.begin(); it != nodeList.end(); ++it)
-	{
-		for (int i = 0; i < 256; ++i)
-		{
-			if ((*it)->symbols()[i])
-				std::cout << static_cast<char>(i) << " ";
-		}
-	}*/
-	/////////////
+	//create tree
 	while (nodeList.size() > 1)
 	{
 		Node* left = nodeList.front();
@@ -81,6 +99,73 @@ void HuffmanTree::build(std::string& text)
 		}
 	}
 	m_root = nodeList.front();
+}
+
+float HuffmanTree::encode(const std::string& inputFilename, const std::string& outputFilename)
+{
+	if (!m_root)
+	{
+		build(inputFilename);
+	}
+	std::ifstream inputFile(inputFilename);
+	if (!inputFile.is_open())
+	{
+		return -1;
+	}
+	std::ofstream outputFile(outputFilename);
+	if (!outputFile.is_open())
+	{
+		return -1;
+	}
+
+	unsigned char ch;
+	BoolVector code(256, 0);
+	int pos = 0;
+	inputFile >> std::noskipws;
+	inputFile >> ch;
+	while (!inputFile.eof())
+	{
+		_encode(ch, code, pos);
+		unsigned char* symb = code.getCells();
+		for (int i = 0; i < (pos / 8); ++i)
+		{
+			outputFile << symb[i];
+		}
+		if (pos / 8)
+		{
+			code = code << pos;
+			pos = pos % 8;
+		}
+		inputFile >> ch;
+	}
+	inputFile.close();
+	outputFile.close();
+	return ((static_cast<float>(countBitsFile(outputFilename)) / static_cast<float>(countBitsFile(inputFilename))) * 100);
+}
+
+bool HuffmanTree::_encode(const char symbol, BoolVector& code, int& pos)
+{
+	Node* root = m_root;
+	while (root->left() || root->right())
+	{
+		if (root->left()->symbols()[symbol] == true)
+		{
+			root = root->left();
+			code[pos] = true;
+			++pos;
+		}
+		else if (root->right()->symbols()[symbol] == true)
+		{
+			root = root->right();
+			code[pos] = false;
+			++pos;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 void HuffmanTree::clear(Node* root)
@@ -145,7 +230,8 @@ void HuffmanTree::printHorizontal(Node * root, int marginLeft, int levelSpacing)
 	for (int i = 0; i < 256; ++i)
 	{
 		if(root->symbols()[i] == true)
-			std::cout << std::string(marginLeft, ' ') << (char)(i) << std::endl;
+			std::cout << std::string(marginLeft, ' ') << static_cast<char>(i) << std::endl;
 	}
 	printHorizontal(root->left(), marginLeft + levelSpacing, levelSpacing);
 }
+
