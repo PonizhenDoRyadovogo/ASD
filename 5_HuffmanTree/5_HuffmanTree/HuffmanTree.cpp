@@ -1,6 +1,7 @@
-#include<list>
-#include<string>
-#include<vector>
+#include <list>
+#include <string>
+#include <vector>
+#include <fstream>
 #include "HuffmanTree.h"
 
 int countBitsFile(std::string fileName)
@@ -22,6 +23,38 @@ int countBitsFile(std::string fileName)
 	return (i * 8);
 }
 
+void prependToFile(const std::string& originFilename, const int dataToPrepend)
+{
+	std::ifstream originFile(originFilename);
+	if (!originFile.is_open()) {
+		std::cerr << "Can't open file for read: " << originFilename << std::endl;
+		return;
+	}
+	std::string tmpFilename = "tmp_" + originFilename;
+	std::ofstream tmpFile(tmpFilename);
+	if (!tmpFile.is_open()) {
+		std::cerr << "Can't create temporary file: " << tmpFilename << std::endl;
+		return;
+	}
+	tmpFile << dataToPrepend;
+	tmpFile << originFile.rdbuf();
+
+	tmpFile.close();
+	originFile.close();
+
+	if (remove(originFilename.c_str()))
+	{
+		std::cerr << "Error delete: " << originFilename << std::endl;
+		return;
+	}
+
+	if (rename(tmpFilename.c_str(), originFilename.c_str()))
+	{
+		std::cerr << "Error rename: " << tmpFilename << std::endl;
+		return;
+	}
+}
+
 HuffmanTree::~HuffmanTree()
 {
 	clear(m_root);
@@ -38,6 +71,7 @@ void HuffmanTree::build(const std::string& inputFilename)
 	std::ifstream inputFile(inputFilename);
 	if (!inputFile.is_open())
 	{
+		std::cerr << "Can't open file for read: " << inputFilename << std::endl;
 		return;
 	}
 	std::list<Node*> nodeList;
@@ -52,14 +86,173 @@ void HuffmanTree::build(const std::string& inputFilename)
 	}
 	inputFile.close();
 	m_tab = tab;
-	//create list of Node
-	for(int i = 0; i < 256; ++i)
+	_createTree();
+}
+
+float HuffmanTree::encode(const std::string& inputFilename, const std::string& outputFilename)
+{
+	if (!m_root)
 	{
-		if (tab[i] > 0)
+		build(inputFilename);
+	}
+	std::ifstream inputFile(inputFilename);
+	if (!inputFile.is_open())
+	{
+		std::cerr << "Can't open file for read: " << inputFilename << std::endl;
+		return -1;
+	}
+	std::ofstream outputFile(outputFilename);
+	if (!outputFile.is_open())
+	{
+		std::cerr << "Can't open file for write: " << outputFilename << std::endl;
+		return -1;
+	}
+
+	unsigned char ch;
+	BoolVector code(256, 0);
+	int pos = 0;
+	inputFile >> std::noskipws;
+	inputFile >> ch;
+	while (!inputFile.eof())
+	{
+		if (!_encode(ch, code, pos))
+		{
+			std::cerr<< "The function is called by another tree. Encoding is impossible or incorrect"<< std::endl;
+			return 0;
+		}
+		unsigned char* symb = code.getCells();
+		for (int i = 0; i < (pos / 8); ++i)
+		{
+			outputFile << symb[i];
+		}
+		if (pos / 8)
+		{
+			code = code << pos;
+			pos = pos % 8;
+		}
+		inputFile >> ch;
+		if (inputFile.eof() && (pos % 8))
+		{
+			outputFile << symb[0];
+		}
+	}
+	inputFile.close();
+	outputFile.close();
+
+	if (pos == 0)
+	{
+		prependToFile(outputFilename, 0);
+	}
+	else
+	{
+		prependToFile(outputFilename, 8 - pos);
+	}
+
+	return ((static_cast<float>(countBitsFile(outputFilename) - 8) / static_cast<float>(countBitsFile(inputFilename))) * 100);
+}
+
+bool HuffmanTree::_encode(const char symbol, BoolVector& code, int& pos)
+{
+	Node* root = m_root;
+	while (root->left() || root->right())
+	{
+		if (root->left()->symbols()[symbol] == true)
+		{
+			root = root->left();
+			code[pos] = true;
+			++pos;
+		}
+		else if (root->right()->symbols()[symbol] == true)
+		{
+			root = root->right();
+			code[pos] = false;
+			++pos;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& decodedFilename)
+{
+	std::ifstream encodeFile(encodedFilename);
+	if (!encodeFile.is_open())
+	{
+		std::cerr << "Can't open file for read: " << encodedFilename << std::endl;
+		return false;
+	}
+	std::ofstream decodeFile(decodedFilename);
+	if (!decodeFile.is_open())
+	{
+		std::cerr << "Can't open file for write: " << decodedFilename << std::endl;
+		return false;
+	}
+	encodeFile >> std::noskipws;
+	int insignificantBits;
+	encodeFile >> insignificantBits;
+	unsigned char ch;
+	encodeFile >> ch;
+	while (!encodeFile.eof())
+	{
+
+	}
+}
+
+void HuffmanTree::clear(Node* root)
+{
+	if (!root)
+		return;
+	clear(root->left());
+	clear(root->right());
+	delete root;
+}
+
+void HuffmanTree::exportTree(const std::string& filename)
+{
+	if (!m_root)
+	{
+		std::cerr << "Tree is empty. Can't export" << std::endl;
+		return;
+	}
+	std::ofstream file(filename);
+	for (int i = 0; i < m_tab.size(); ++i)
+	{
+		file << m_tab[i] << " ";
+	}
+	file.close();
+}
+
+void HuffmanTree::importTree(const std::string& filename)
+{
+	if (m_root)
+	{
+		clear(m_root);
+	}
+	std::ifstream file(filename);
+	int frequency;
+	file >> frequency;
+	for (int i = 0; i < 256; ++i)
+	{
+		m_tab[i] = frequency;
+		file >> frequency;
+	}
+	_createTree();
+}
+
+void HuffmanTree::_createTree()
+{
+	std::list<Node*> nodeList;
+	//create list of Node
+	for (int i = 0; i < 256; ++i)
+	{
+		if (m_tab[i] > 0)
 		{
 			BoolVector symbols(256, 0);
 			symbols[i] = true;
-			nodeList.push_back(new Node(symbols, tab[i]));
+			nodeList.push_back(new Node(symbols, m_tab[i]));
 		}
 	}
 	//sort list
@@ -99,91 +292,6 @@ void HuffmanTree::build(const std::string& inputFilename)
 		}
 	}
 	m_root = nodeList.front();
-}
-
-float HuffmanTree::encode(const std::string& inputFilename, const std::string& outputFilename)
-{
-	if (!m_root)
-	{
-		build(inputFilename);
-	}
-	std::ifstream inputFile(inputFilename);
-	if (!inputFile.is_open())
-	{
-		return -1;
-	}
-	std::ofstream outputFile(outputFilename);
-	if (!outputFile.is_open())
-	{
-		return -1;
-	}
-
-	unsigned char ch;
-	BoolVector code(256, 0);
-	int pos = 0;
-	inputFile >> std::noskipws;
-	inputFile >> ch;
-	while (!inputFile.eof())
-	{
-		if (!_encode(ch, code, pos))
-		{
-			perror("The function is called by another tree. Encoding is impossible or incorrect");
-			return 0;
-		}
-		unsigned char* symb = code.getCells();
-		for (int i = 0; i < (pos / 8); ++i)
-		{
-			outputFile << symb[i];
-		}
-		if (pos / 8)
-		{
-			code = code << pos;
-			pos = pos % 8;
-		}
-		inputFile >> ch;
-	}
-	inputFile.close();
-	outputFile.close();
-	return ((static_cast<float>(countBitsFile(outputFilename)) / static_cast<float>(countBitsFile(inputFilename))) * 100);
-}
-
-bool HuffmanTree::_encode(const char symbol, BoolVector& code, int& pos)
-{
-	Node* root = m_root;
-	while (root->left() || root->right())
-	{
-		if (root->left()->symbols()[symbol] == true)
-		{
-			root = root->left();
-			code[pos] = true;
-			++pos;
-		}
-		else if (root->right()->symbols()[symbol] == true)
-		{
-			root = root->right();
-			code[pos] = false;
-			++pos;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& decodedFilename)
-{
-	return true; //ToDo
-}
-
-void HuffmanTree::clear(Node* root)
-{
-	if (!root)
-		return;
-	clear(root->left());
-	clear(root->right());
-	delete root;
 }
 
 HuffmanTree::Node::Node(const BoolVector& symbols, const int frequency, Node* left, Node* right)

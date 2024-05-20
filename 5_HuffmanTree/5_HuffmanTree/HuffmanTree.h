@@ -19,8 +19,11 @@ public:
 	bool decode(const std::string& encodedFilename, const std::string& decodedFilename);
 	void printHorizontal(int levelSpacing = 4) const;
 	void printHorizontal(Node* root, int marginLeft, int levelSpacing) const;
+	void exportTree(const std::string& filename);
+	void importTree(const std::string& filename);
 private:
 	bool _encode(const char symbol, BoolVector& code, int& pos);
+	void _createTree();
 private:
 	Node* m_root = nullptr;
 	std::vector<int> m_tab;
