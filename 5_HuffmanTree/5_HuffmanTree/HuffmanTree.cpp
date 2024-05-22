@@ -191,21 +191,17 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 		std::cerr << "Can't open file for write: " << decodedFilename << std::endl;
 		return false;
 	}
-	//encodeFile >> std::noskipws;
+	encodeFile >> std::noskipws;
 	unsigned char insignificantBits;
 	encodeFile >> insignificantBits;
 	unsigned char ch;
 	encodeFile >> ch;
 	int i = 0;
-	BoolVector way(256, 0);
+	BoolVector way(1000, 0);
 	while (!encodeFile.eof())
 	{
 		way.addSymbol(ch, i);
 		encodeFile >> ch;
-		/*if (encodeFile.eof())
-		{
-			way.addSymbol(ch, i + 1);
-		}*/
 		++i;
 	}
 	--i;
