@@ -25,13 +25,13 @@ int countBitsFile(std::string fileName)
 
 void prependToFile(const std::string& originFilename, const int dataToPrepend)
 {
-	std::ifstream originFile(originFilename);
+	std::ifstream originFile(originFilename, std::ios::binary);
 	if (!originFile.is_open()) {
 		std::cerr << "Can't open file for read: " << originFilename << std::endl;
 		return;
 	}
 	std::string tmpFilename = "tmp_" + originFilename;
-	std::ofstream tmpFile(tmpFilename);
+	std::ofstream tmpFile(tmpFilename, std::ios::binary);
 	if (!tmpFile.is_open()) {
 		std::cerr << "Can't create temporary file: " << tmpFilename << std::endl;
 		return;
@@ -121,7 +121,7 @@ float HuffmanTree::encode(const std::string& inputFilename, const std::string& o
 			return 0;
 		}
 		unsigned char* symb = code.getCells();
-		int i = 0;
+ 		int i = 0;
 		for (; i < (pos / 8); ++i)
 		{
 			outputFile << symb[i];
@@ -179,13 +179,13 @@ bool HuffmanTree::_encode(const char symbol, BoolVector& code, int& pos)
 
 bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& decodedFilename)
 {
-	std::ifstream encodeFile(encodedFilename);
+	std::ifstream encodeFile(encodedFilename, std::ios::binary);
 	if (!encodeFile.is_open())
 	{
 		std::cerr << "Can't open file for read: " << encodedFilename << std::endl;
 		return false;
 	}
-	std::ofstream decodeFile(decodedFilename);
+	std::ofstream decodeFile(decodedFilename, std::ios::binary);
 	if (!decodeFile.is_open())
 	{
 		std::cerr << "Can't open file for write: " << decodedFilename << std::endl;
@@ -197,16 +197,17 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 	unsigned char ch;
 	encodeFile >> ch;
 	int i = 0;
-	BoolVector way(1000, 0);
+	BoolVector way(5000, 0);//????????????? 
 	while (!encodeFile.eof())
 	{
 		way.addSymbol(ch, i);
 		encodeFile >> ch;
 		++i;
 	}
-	--i;
+	std::cout << way;
 	Node* node = m_root;
-	for (int j = 0, flag = 0; flag <= i; ++j)
+	int f = (i * 8) - (insignificantBits - '0');
+	for (int j = 0; j < f; ++j)
 	{
 		if (way[j] == true)
 		{
@@ -241,10 +242,6 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 				decodeFile << ch;
 				node = m_root;
 			}
-		}
-		if (j != 0 && j % 8 == 0)
-		{
-			++flag;
 		}
 	}
 	encodeFile.close();
