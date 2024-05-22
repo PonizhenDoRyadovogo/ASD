@@ -14,9 +14,8 @@ int main()
 	std::cout << "\n";
 	foo.printHorizontal();
 	std::string encodeText = "encode.txt";
+	std::string decodeText = "decode.txt";
 	std::cout<< "compression ratio = " << foo.encode(str, encodeText)<<std::endl;
-	foo.exportTree("export.txt");
-	goo.importTree("export.txt");
-	goo.printHorizontal();
+	foo.decode(encodeText, decodeText);
 	return 0;
 }

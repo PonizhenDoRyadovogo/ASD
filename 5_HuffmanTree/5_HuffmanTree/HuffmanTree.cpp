@@ -121,13 +121,14 @@ float HuffmanTree::encode(const std::string& inputFilename, const std::string& o
 			return 0;
 		}
 		unsigned char* symb = code.getCells();
-		for (int i = 0; i < (pos / 8); ++i)
+		int i = 0;
+		for (; i < (pos / 8); ++i)
 		{
 			outputFile << symb[i];
 		}
 		if (pos / 8)
 		{
-			code = code << pos;
+			code = code << i * 8;
 			pos = pos % 8;
 		}
 		inputFile >> ch;
@@ -190,15 +191,68 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 		std::cerr << "Can't open file for write: " << decodedFilename << std::endl;
 		return false;
 	}
-	encodeFile >> std::noskipws;
-	int insignificantBits;
+	//encodeFile >> std::noskipws;
+	unsigned char insignificantBits;
 	encodeFile >> insignificantBits;
 	unsigned char ch;
 	encodeFile >> ch;
+	int i = 0;
+	BoolVector way(256, 0);
 	while (!encodeFile.eof())
 	{
-
+		way.addSymbol(ch, i);
+		encodeFile >> ch;
+		/*if (encodeFile.eof())
+		{
+			way.addSymbol(ch, i + 1);
+		}*/
+		++i;
 	}
+	--i;
+	Node* node = m_root;
+	for (int j = 0, flag = 0; flag <= i; ++j)
+	{
+		if (way[j] == true)
+		{
+			node = node->left();
+			if (!node->left() && !node->right())
+			{
+				for (int k = 0; k < 256; k++)
+				{
+					if (node->symbols()[k] == true)
+					{
+						ch = static_cast<unsigned char>(k);
+						break;
+					}
+				}
+				decodeFile << ch;
+				node = m_root;
+			}
+		}
+		else
+		{
+			node = node->right();
+			if (!node->left() && !node->right())
+			{
+				for (int k = 0; k < 256; k++)
+				{
+					if (node->symbols()[k] == true)
+					{
+						ch = static_cast<unsigned char>(k);
+						break;
+					}
+				}
+				decodeFile << ch;
+				node = m_root;
+			}
+		}
+		if (j != 0 && j % 8 == 0)
+		{
+			++flag;
+		}
+	}
+	encodeFile.close();
+	decodeFile.close();
 }
 
 void HuffmanTree::clear(Node* root)
