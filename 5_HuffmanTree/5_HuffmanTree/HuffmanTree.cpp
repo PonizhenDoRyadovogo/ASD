@@ -103,7 +103,7 @@ float HuffmanTree::encode(const std::string& inputFilename, const std::string& o
 			std::cerr<< "The function is called by another tree. Encoding is impossible or incorrect"<< std::endl;
 			return 0;
 		}
-		unsigned char* symb = code.getCells();
+		const unsigned char* symb = code.getCells();
  		int i = 0;
 		for (; i < (pos / 8); ++i)
 		{
