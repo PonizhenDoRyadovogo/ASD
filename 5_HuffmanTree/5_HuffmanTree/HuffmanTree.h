@@ -10,6 +10,8 @@ class HuffmanTree
 {
 public:
 	class Node;
+private:
+	struct decodeData;
 public:
 	HuffmanTree() = default;
 	~HuffmanTree();
@@ -24,17 +26,24 @@ public:
 private:
 	bool _encode(const char symbol, BoolVector& code, int& pos);
 	void _createTree();
-	bool _decode(std::ofstream& ostream,BoolVector& way, int& pos, Node*& node);
+	bool _decode(std::ofstream& ostream, decodeData& data);
 private:
 	Node* m_root = nullptr;
 	std::vector<int> m_tab;
 	struct decodeData
 	{
-		int m_insignificantBits;
+		int m_insignificnatBits;
 		bool m_flagEOF;
-		BoolVector m_way;
+		Node* m_node = nullptr;
 		int m_pos;
-		Node* node = nullptr;
+		BoolVector m_way;
+		decodeData(int insignificantBits = 0, bool falgEOF = false, Node* node = nullptr, int pos = 0)
+			: m_insignificnatBits(insignificantBits)
+			, m_flagEOF(falgEOF)
+			, m_node(node)
+			, m_pos(pos)
+		{
+		}
 	};
 };
 

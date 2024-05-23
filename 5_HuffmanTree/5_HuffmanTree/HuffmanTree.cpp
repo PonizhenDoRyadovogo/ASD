@@ -189,12 +189,10 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 	encodeFile >> insignificantBits;
 	unsigned char ch;
 	encodeFile >> ch;
-	int pos = 0;
 	decodeData data;
-	data.m_pos = 0;
-	data.m_insignificantBits = insignificantBits;
-	data.m_flagEOF = false;
 	data.m_way.addSymbol(ch, 0);
+	data.m_insignificnatBits = insignificantBits - '0';
+	data.m_node = m_root;
 	/*if (!m_root->left() && !m_root->right())
 	{
 		unsigned char symbol;
@@ -217,62 +215,73 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 	Node* node = m_root;
 	while (!encodeFile.eof())
 	{
-		//bool isDecode = _decode(decodeFile, way, pos, node);
-		/*if ((isDecode && (pos == 8)) || !isDecode)
+		bool isDecode = _decode(decodeFile, data);
+		if ((isDecode && (data.m_pos == 8)) || !isDecode)
 		{
 			encodeFile >> ch;
+			data.m_way.addSymbol(ch, 0);
+			data.m_pos = 0;
 			if (encodeFile.peek() == EOF)
 			{
-				
+				data.m_flagEOF = true;
+				for (;;)
+				{
+					_decode(decodeFile, data);
+					if (data.m_pos == 8 - data.m_insignificnatBits)
+						break;
+				}
 			}
-			data.m_way.addSymbol(ch, 0);
-			pos = 0;
-		}*/
+		}
 	}
 	encodeFile.close();
 	decodeFile.close();
 }
 
-bool HuffmanTree::_decode(std::ofstream& ostream, BoolVector& way, int& pos, Node*& node)
+bool HuffmanTree::_decode(std::ofstream& ostream, decodeData& data)
 {
 	unsigned char ch;
-	for (; pos < 8; ++pos)
+	int insignificantBits = 0;
+	if (data.m_flagEOF)
 	{
-		if (way[pos] == true)
+		insignificantBits = data.m_insignificnatBits;
+	}
+	for (; data.m_pos < 8 - insignificantBits; ++data.m_pos)
+	{
+		if (data.m_way[data.m_pos] == true)
 		{
-			node = node->left();
-			if (!node->left() && !node->right())
+			data.m_node = data.m_node->left();
+			if (!data.m_node->left() && !data.m_node->right())
 			{
 				for (int j = 0; j < 256; j++)
 				{
-					if (node->symbols()[j] == true)
+					if (data.m_node->symbols()[j] == true)
 					{
 						ch = static_cast<unsigned char>(j);
 						break;
 					}
 				}
 				ostream << ch;
-				node = m_root;
-				++pos;
+				data.m_node = m_root;
+				++data.m_pos;
 				return true;
 			}
 		}
 		else
 		{
-			node = node->right();
-			if (!node->left() && !node->right())
+			data.m_node = data.m_node->right();
+			if (!data.m_node->left() && !data.m_node->right())
 			{
 				for (int j = 0; j < 256; j++)
 				{
-					if (node->symbols()[j] == true)
+					if (data.m_node->symbols()[j] == true)
 					{
 						ch = static_cast<unsigned char>(j);
 						break;
 					}
 				}
 				ostream << ch;
-				node = m_root;
-				++pos;
+				data.m_node = m_root;
+				++data.m_pos;
 				return true;
 			}
 		}
