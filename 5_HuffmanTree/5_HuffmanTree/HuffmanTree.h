@@ -24,9 +24,18 @@ public:
 private:
 	bool _encode(const char symbol, BoolVector& code, int& pos);
 	void _createTree();
+	bool _decode(std::ofstream& ostream,BoolVector& way, int& pos, Node*& node);
 private:
 	Node* m_root = nullptr;
 	std::vector<int> m_tab;
+	struct decodeData
+	{
+		int m_insignificantBits;
+		bool m_flagEOF;
+		BoolVector m_way;
+		int m_pos;
+		Node* node = nullptr;
+	};
 };
 
 class HuffmanTree::Node

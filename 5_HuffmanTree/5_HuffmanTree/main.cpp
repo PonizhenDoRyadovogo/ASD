@@ -9,7 +9,7 @@ int main()
 	HuffmanTree foo, goo;
 	std::string str = "test.txt";
 	std::string str2 = "other.txt";
-	goo.build(str2);
+	//goo.build(str2);
 	foo.build(str);
 	std::cout << "\n";
 	foo.printHorizontal();
