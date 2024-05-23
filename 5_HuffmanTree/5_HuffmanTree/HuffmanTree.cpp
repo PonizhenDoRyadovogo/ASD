@@ -49,7 +49,7 @@ void HuffmanTree::build(const std::string& inputFilename)
 		clear(m_root);
 	}
 
-	std::ifstream inputFile(inputFilename);
+	std::ifstream inputFile(inputFilename, std::ios::binary);
 	if (!inputFile.is_open())
 	{
 		std::cerr << "Can't open file for read: " << inputFilename << std::endl;
@@ -193,26 +193,15 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 	data.m_way.addSymbol(ch, 0);
 	data.m_insignificnatBits = insignificantBits - '0';
 	data.m_node = m_root;
-	/*if (!m_root->left() && !m_root->right())
+	int countChar = 1;
+	if (encodeFile.peek() == EOF)//if there was only one character in the encoded file
 	{
-		unsigned char symbol;
-		for (int i = 0; i < 256; ++i)
+		data.m_flagEOF = true;
+		while (data.m_pos != 8 - data.m_insignificnatBits)
 		{
-			if (m_root->symbols()[i] == true)
-			{
-				symbol = static_cast<unsigned char>(i);
-				break;
-			}
+			_decode(decodeFile, data);
 		}
-		while (!encodeFile.eof())
-		{
-			for (int i = 0; i < 8; ++i)
-			{
-
-			}
-		}
-	}*/
-	Node* node = m_root;
+	}
 	while (!encodeFile.eof())
 	{
 		bool isDecode = _decode(decodeFile, data);
@@ -226,7 +215,13 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 				data.m_flagEOF = true;
 				for (;;)
 				{
-					_decode(decodeFile, data);
+					if (!_decode(decodeFile, data))
+					{
+						encodeFile.close();
+						decodeFile.close();
+						std::cerr << "Can't decode!" << std::endl;
+						return false;
+					}
 					if (data.m_pos == 8 - data.m_insignificnatBits)
 						break;
 				}
@@ -235,6 +230,7 @@ bool HuffmanTree::decode(const std::string& encodedFilename, const std::string& 
 	}
 	encodeFile.close();
 	decodeFile.close();
+	return true;
 }
 
 bool HuffmanTree::_decode(std::ofstream& ostream, decodeData& data)
@@ -244,6 +240,22 @@ bool HuffmanTree::_decode(std::ofstream& ostream, decodeData& data)
 	if (data.m_flagEOF)
 	{
 		insignificantBits = data.m_insignificnatBits;
+	}
+	if (!m_root->left() && !m_root->right())
+	{
+		for (int i = 0; i < 256; ++i)
+		{
+			if (m_root->symbols()[i] == true)
+			{
+				ch = static_cast<unsigned char>(i);
+				break;
+			}
+		}
+		for (; data.m_pos < 8 - insignificantBits; ++data.m_pos)
+		{
+			ostream << ch;
+		}
+		return true;
 	}
 	for (; data.m_pos < 8 - insignificantBits; ++data.m_pos)
 	{
