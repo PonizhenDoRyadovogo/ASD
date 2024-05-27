@@ -21,9 +21,6 @@
     <ClInclude Include="..\..\..\932221b\ThirdLab OOP\ThirdLab OOP\BoolVector.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\932221b\SixthLab OOP\SixthLab OOP\Set.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HuffmanTree.cpp">
@@ -33,9 +30,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\932221b\ThirdLab OOP\ThirdLab OOP\BoolVector.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\932221b\SixthLab OOP\SixthLab OOP\Set.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

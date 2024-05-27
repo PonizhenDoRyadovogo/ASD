@@ -3,8 +3,7 @@
 #include<string>
 #include <fstream>
 #include<vector>
-#include "C:\STUDY\Repo\932221b\ThirdLab OOP\ThirdLab OOP\BoolVector.h"
-#include "C:\STUDY\Repo\932221b\SixthLab OOP\SixthLab OOP\Set.h"
+#include "../../../932221b/ThirdLab OOP/ThirdLab OOP/BoolVector.h"
 
 class HuffmanTree
 {

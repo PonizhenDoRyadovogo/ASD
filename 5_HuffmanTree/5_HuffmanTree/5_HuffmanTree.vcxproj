@@ -127,12 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\932221b\SixthLab OOP\SixthLab OOP\Set.h" />
     <ClInclude Include="..\..\..\932221b\ThirdLab OOP\ThirdLab OOP\BoolVector.h" />
     <ClInclude Include="HuffmanTree.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\932221b\SixthLab OOP\SixthLab OOP\Set.cpp" />
     <ClCompile Include="..\..\..\932221b\ThirdLab OOP\ThirdLab OOP\BoolVector.cpp" />
     <ClCompile Include="HuffmanTree.cpp" />
     <ClCompile Include="main.cpp" />
