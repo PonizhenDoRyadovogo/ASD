@@ -25,9 +25,9 @@ public:
 	HashTable() = default;
 	HashTable(IHashFunction* hashFunction, int capacity);
 	~HashTable();
-	void insert(const int key);
+	void insert(const int key, std::string& str);
 	bool erase(const int key);
-	bool find(const int key);
+	bool contains(const int key);
 	void print() const;
 private:
 	int findIndex(TableElement* element) const;
@@ -37,6 +37,7 @@ private:
 	struct TableElement
 	{
 		int m_key = 0;
+		std::string m_str = "";
 		TableElement* m_next = nullptr;
 		TableElement* m_prev = nullptr;
 		bool m_hasValue = false;

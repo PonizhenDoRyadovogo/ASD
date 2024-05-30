@@ -28,13 +28,14 @@ HashTable::~HashTable()
 	}
 }
 
-void HashTable::insert(const int key)
+void HashTable::insert(const int key, std::string& str)
 {
 	int index = m_hashFunction->hash(key, m_capacity);
 	if (!m_table[index]->m_hasValue)
 	{
 		m_table[index]->m_key = key;
 		m_table[index]->m_hasValue = true;
+		m_table[index]->m_str = str;
 	}
 	else
 	{
@@ -53,7 +54,10 @@ void HashTable::insert(const int key)
 				{
 					m_table[j]->m_key = key;
 					m_table[j]->m_hasValue = true;
+					m_table[j]->m_str = str;
 					m_table[i]->m_next = &(*m_table[j]);
+					m_table[j]->m_prev = &(*m_table[i]);
+					break;
 				}
 			}
 		}
@@ -65,7 +69,10 @@ void HashTable::insert(const int key)
 				{
 					m_table[j]->m_key = key;
 					m_table[j]->m_hasValue = true;
+					m_table[j]->m_str = str;
 					m_table[index]->m_next = &(*m_table[j]);
+					m_table[j]->m_prev = &(*m_table[index]);
+					break;
 				}
 			}
 		}
@@ -74,16 +81,66 @@ void HashTable::insert(const int key)
 
 bool HashTable::erase(const int key)
 {
-	/*if (!find(key))
+	if (!contains(key))
 	{
 		return false;
 	}
 	int index = m_hashFunction->hash(key, m_capacity);
-	if(m_table[index])*/
-	return false;
+	if (m_table[index]->m_key == key)
+	{
+		if (!m_table[index]->m_prev && !m_table[index]->m_next)
+		{
+			m_table[index]->m_hasValue = false;
+			m_table[index]->m_key = 0;
+			m_table[index]->m_str = "";
+		}
+		else if (m_table[index]->m_prev && !m_table[index]->m_next)
+		{
+			m_table[index]->m_hasValue = false;
+			m_table[index]->m_key = 0;
+			m_table[index]->m_str = "";
+			m_table[index]->m_prev->m_next = nullptr;
+			m_table[index]->m_prev = nullptr;
+		}
+		else if (m_table[index]->m_next)
+		{
+			TableElement* tmp = m_table[index];
+			while (tmp->m_next && tmp->m_hasValue)
+			{
+				tmp->m_key = tmp->m_next->m_key;
+				tmp->m_str = tmp->m_next->m_str;
+				tmp = tmp->m_next;
+			}
+			tmp->m_hasValue = false;
+			tmp->m_key = 0;
+			tmp->m_str = "";
+			tmp->m_prev->m_next = nullptr;
+			tmp->m_prev = nullptr;
+		}
+	}
+	else
+	{
+		TableElement* tmp = m_table[index];
+		while (tmp->m_key != key)
+		{
+			tmp = tmp->m_next;
+		}
+		while (tmp->m_next && tmp->m_hasValue)
+		{
+			tmp->m_key = tmp->m_next->m_key;
+			tmp->m_str = tmp->m_next->m_str;
+			tmp = tmp->m_next;
+		}
+		tmp->m_hasValue = false;
+		tmp->m_key = 0;
+		tmp->m_str = "";
+		tmp->m_prev->m_next = nullptr;
+		tmp->m_prev = nullptr;
+	}
+	return true;
 }
 
-bool HashTable::find(const int key)
+bool HashTable::contains(const int key)
 {
 	int index = m_hashFunction->hash(key, m_capacity);
 	if (m_table[index]->m_hasValue)
@@ -124,7 +181,7 @@ void HashTable::print() const
 	{
 		if (m_table[i]->m_hasValue)
 		{
-			std::cout << i << " " << m_table[i]->m_key << "\n";
+			std::cout << i << " " << m_table[i]->m_key << " " << m_table[i]->m_str <<"\n";
 		}
 	}
 }
