@@ -1,4 +1,5 @@
 #include<iostream>
+#include<assert.h>
 
 #include "HashTable.h"
 
@@ -6,6 +7,12 @@ int FirstHashFunction::hash(const int key, const int tableSize) const
 {
 	int h0 = key % tableSize;
 	return ((h0 + d) % tableSize);
+}
+
+IHashFunction* FirstHashFunction::_clone()
+{
+	FirstHashFunction* tmp = new FirstHashFunction;
+	return tmp;
 }
 
 HashTable::HashTable(IHashFunction* hashFunction, int capacity)
@@ -19,6 +26,23 @@ HashTable::HashTable(IHashFunction* hashFunction, int capacity)
 	}
 }
 
+HashTable::HashTable(const HashTable& other)
+	: m_capacity(other.m_capacity)
+	, m_table(other.m_capacity)
+{
+	m_hashFunction = other.m_hashFunction->_clone();
+	HashTable tmp(other.m_hashFunction->_clone(), other.m_capacity);
+	for (int i = 0; i < other.m_capacity; ++i)
+	{
+		tmp.m_table[i]->m_hasValue = other.m_table[i]->m_hasValue;
+		tmp.m_table[i]->m_key = other.m_table[i]->m_key;
+		tmp.m_table[i]->m_str = other.m_table[i]->m_str;
+		tmp.m_table[i]->m_next = other.m_table[i]->m_next ? tmp.m_table[other._findIndex(other.m_table[i]->m_next)] : nullptr;
+		tmp.m_table[i]->m_prev = other.m_table[i]->m_prev ? tmp.m_table[other._findIndex(other.m_table[i]->m_prev)] : nullptr;
+	}
+	std::swap(m_table, tmp.m_table);
+}
+
 HashTable::~HashTable()
 { 
 	delete m_hashFunction;
@@ -28,14 +52,20 @@ HashTable::~HashTable()
 	}
 }
 
-void HashTable::insert(const int key, std::string& str)
+bool HashTable::insert(const int key, std::string& str)
 {
+	if (_isFilled())
+	{
+		return false;
+	}
+
 	int index = m_hashFunction->hash(key, m_capacity);
 	if (!m_table[index]->m_hasValue)
 	{
 		m_table[index]->m_key = key;
 		m_table[index]->m_hasValue = true;
 		m_table[index]->m_str = str;
+		return true;
 	}
 	else
 	{
@@ -46,7 +76,7 @@ void HashTable::insert(const int key, std::string& str)
 			while (tmp->m_next && i < m_capacity)
 			{
 				tmp = tmp->m_next;
-				i = findIndex(tmp);
+				i = _findIndex(tmp);
 			}
 			for (int j = 0; j < m_capacity; ++j)
 			{
@@ -57,7 +87,7 @@ void HashTable::insert(const int key, std::string& str)
 					m_table[j]->m_str = str;
 					m_table[i]->m_next = &(*m_table[j]);
 					m_table[j]->m_prev = &(*m_table[i]);
-					break;
+					return true;
 				}
 			}
 		}
@@ -72,7 +102,7 @@ void HashTable::insert(const int key, std::string& str)
 					m_table[j]->m_str = str;
 					m_table[index]->m_next = &(*m_table[j]);
 					m_table[j]->m_prev = &(*m_table[index]);
-					break;
+					return true;
 				}
 			}
 		}
@@ -142,12 +172,24 @@ bool HashTable::erase(const int key)
 
 bool HashTable::contains(const int key)
 {
+	if (find(key) == "")
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+std::string HashTable::find(const int key) const
+{
 	int index = m_hashFunction->hash(key, m_capacity);
 	if (m_table[index]->m_hasValue)
 	{
 		if (m_table[index]->m_key == key)
 		{
-			return true;
+			return m_table[index]->m_str;
 		}
 		else
 		{
@@ -159,19 +201,20 @@ bool HashTable::contains(const int key)
 					tmp = tmp->m_next;
 					if (tmp->m_key == key)
 					{
-						return true;
+						return tmp->m_str;
 					}
 				}
+				return "";
 			}
 			else
 			{
-				return false;
+				return "";
 			}
 		}
 	}
 	else
 	{
-		return false;
+		return "";
 	}
 }
 
@@ -186,7 +229,7 @@ void HashTable::print() const
 	}
 }
 
-int HashTable::findIndex(TableElement* element) const
+int HashTable::_findIndex(TableElement* element) const
 {
 	for (int i = 0; i < m_capacity; ++i)
 	{
@@ -195,4 +238,38 @@ int HashTable::findIndex(TableElement* element) const
 			return i;
 		}
 	}
+}
+
+std::string& HashTable::operator[](const int key)
+{
+	assert(contains(key));
+	int index = m_hashFunction->hash(key, m_capacity);
+	if (m_table[index]->m_key == key)
+	{
+		return m_table[index]->m_str;
+	}
+	else
+	{
+		TableElement* tmp = m_table[index];
+		while (tmp->m_next)
+		{
+			tmp = tmp->m_next;
+			if (tmp->m_key == key)
+			{
+				return tmp->m_str;
+			}
+		}
+	}
+}
+
+bool HashTable::_isFilled() const
+{
+	for (int i = 0; i < m_capacity; ++i)
+	{
+		if (!m_table[i]->m_hasValue)
+		{
+			return false;
+		}
+	}
+	return true;
 }

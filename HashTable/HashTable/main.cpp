@@ -16,8 +16,13 @@ int main()
 	table.insert(5, str3);
 	table.insert(5, str4);
 	table.print();
-	table.erase(5);
 	std::cout << "============\n";
+	HashTable clone(table);
+	clone.print();
+	clone[5] = "abracadabra";
+	std::cout << "============\nclone\n";
+	clone.print();
+	std::cout << "============\ntable\n";
 	table.print();
 	if (table.contains(20))
 	{

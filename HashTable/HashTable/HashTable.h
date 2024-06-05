@@ -6,12 +6,14 @@ class IHashFunction
 {
 public:
 	virtual int hash(const int key, const int tableSize) const = 0;
+	virtual IHashFunction* _clone() = 0;
 };
 
 class FirstHashFunction : public IHashFunction
 {
 public:
 	int hash(const int key, const int tableSize) const override;
+	IHashFunction* _clone() override;
 private:
 	const int d = 3;
 	// c = 0
@@ -24,13 +26,17 @@ public:
 public:
 	HashTable() = default;
 	HashTable(IHashFunction* hashFunction, int capacity);
+	HashTable(const HashTable& other);
 	~HashTable();
-	void insert(const int key, std::string& str);
+	bool insert(const int key, std::string& str);
 	bool erase(const int key);
 	bool contains(const int key);
 	void print() const;
+	std::string find(const int key) const;
+	std::string& operator[](const int key);
 private:
-	int findIndex(TableElement* element) const;
+	int _findIndex(TableElement* element) const;
+	bool _isFilled() const;
 private:
 	IHashFunction *m_hashFunction = nullptr;
 	std::vector<TableElement*> m_table;
