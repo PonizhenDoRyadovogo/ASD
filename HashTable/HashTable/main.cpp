@@ -6,6 +6,7 @@
 int main()
 {
 	FirstHashFunction* hash1 = new FirstHashFunction;
+	SecondHashFunction* hash2 = new SecondHashFunction;
 	HashTable table(hash1, 10);
 	std::string str1 = "Hello";
 	std::string str2 = "World";
@@ -17,16 +18,7 @@ int main()
 	table.insert(5, str4);
 	table.print();
 	std::cout << "============\n";
-	HashTable clone(table);
-	clone.print();
-	clone[5] = "abracadabra";
-	std::cout << "============\nclone\n";
-	clone.print();
-	std::cout << "============\ntable\n";
+	table.changeHash(hash2);
 	table.print();
-	if (table.contains(20))
-	{
-		std::cout << "true";
-	}
 	return 0;
 }

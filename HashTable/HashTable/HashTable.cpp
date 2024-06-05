@@ -1,5 +1,6 @@
 #include<iostream>
 #include<assert.h>
+#include<utility>
 
 #include "HashTable.h"
 
@@ -12,6 +13,17 @@ int FirstHashFunction::hash(const int key, const int tableSize) const
 IHashFunction* FirstHashFunction::_clone()
 {
 	FirstHashFunction* tmp = new FirstHashFunction;
+	return tmp;
+}
+
+int SecondHashFunction::hash(const int key, const int tableSize) const
+{
+	return static_cast<int>((key % tableSize) * (-(1 - sqrt(5)) / 2) * tableSize) % tableSize;
+}
+
+IHashFunction* SecondHashFunction::_clone()
+{
+	SecondHashFunction* tmp = new SecondHashFunction;
 	return tmp;
 }
 
@@ -50,6 +62,11 @@ HashTable::~HashTable()
 	{
 		delete m_table[i];
 	}
+}
+
+int HashTable::capacity()const
+{
+	return m_capacity;
 }
 
 bool HashTable::insert(const int key, std::string& str)
@@ -229,6 +246,56 @@ void HashTable::print() const
 	}
 }
 
+void HashTable::resize(int newSize)
+{
+	if (m_capacity == newSize)
+	{
+		return;
+	}
+	std::vector<std::pair<int, std::string>> vec = _pairFilledValues();
+	m_table.resize(newSize);
+	for (int i = 0; i < newSize; ++i)
+	{
+		if (i < m_capacity)
+		{
+			m_table[i]->m_hasValue = false;
+			m_table[i]->m_next = nullptr;
+			m_table[i]->m_prev = nullptr;
+			m_table[i]->m_key = 0;
+			m_table[i]->m_str = "";
+		}
+		else
+		{
+			m_table[i] = new TableElement;
+		}
+	}
+	m_capacity = newSize;
+	for (int i = 0; i < vec.size(); ++i)
+	{
+		insert(vec[i].first, vec[i].second);
+	}
+}
+
+void HashTable::changeHash(IHashFunction* hashFunction)
+{
+	assert(hashFunction);
+	m_hashFunction = hashFunction;
+	std::vector<std::pair<int, std::string>> vec = _pairFilledValues();
+	for (int i = 0; i < m_capacity; ++i)
+	{
+		m_table[i]->m_hasValue = false;
+		m_table[i]->m_next = nullptr;
+		m_table[i]->m_prev = nullptr;
+		m_table[i]->m_key = 0;
+		m_table[i]->m_str = "";
+	}
+	for (int i = 0; i < vec.size(); ++i)
+	{
+		insert(vec[i].first, vec[i].second);
+	}
+
+}
+
 int HashTable::_findIndex(TableElement* element) const
 {
 	for (int i = 0; i < m_capacity; ++i)
@@ -262,6 +329,19 @@ std::string& HashTable::operator[](const int key)
 	}
 }
 
+HashTable& HashTable::operator=(const HashTable& other)
+{
+	m_hashFunction = other.m_hashFunction->_clone();
+	if (m_capacity != other.m_capacity)
+	{
+		m_table.resize(other.m_capacity);
+		m_capacity = other.m_capacity;
+	}
+	HashTable tmp(other);
+	std::swap(m_table, tmp.m_table);
+	return *this;
+}
+
 bool HashTable::_isFilled() const
 {
 	for (int i = 0; i < m_capacity; ++i)
@@ -272,4 +352,18 @@ bool HashTable::_isFilled() const
 		}
 	}
 	return true;
+}
+
+std::vector<std::pair<int, std::string>> HashTable::_pairFilledValues()const
+{
+	std::vector<std::pair<int, std::string>> vec;
+	for (int i = 0; i < m_capacity; ++i)
+	{
+		if (m_table[i]->m_hasValue)
+		{
+			std::pair<int, std::string> p{ m_table[i]->m_key, m_table[i]->m_str };
+			vec.push_back(p);
+		}
+	}
+	return vec;
 }
