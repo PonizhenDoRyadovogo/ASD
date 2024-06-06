@@ -29,27 +29,26 @@ public:
 
 class HashTable
 {
-public:
+private:
 	struct TableElement;
 public:
-	HashTable() = default;
+	HashTable();
 	HashTable(IHashFunction* hashFunction, int capacity);
 	HashTable(const HashTable& other);
 	~HashTable();
 	int capacity()const;
-	bool insert(const int key, std::string& str);
+	bool insert(const int key, const std::string& str);
 	bool erase(const int key);
 	bool contains(const int key);
 	void print() const;
 	void resize(int newSize);
 	void changeHash(IHashFunction* hashFunction);
-	std::string find(const int key) const;
+	TableElement* _findElement(const int key) const;
 	std::string& operator[](const int key);
 	HashTable& operator=(const HashTable& other);
 private:
 	int _findIndex(TableElement* element) const;
 	bool _isFilled() const;
-	std::vector<std::pair<int, std::string>> _pairFilledValues()const;
 private:
 	IHashFunction *m_hashFunction = nullptr;
 	std::vector<TableElement*> m_table;

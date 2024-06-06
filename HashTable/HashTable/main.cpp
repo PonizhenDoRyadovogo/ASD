@@ -12,6 +12,22 @@ int main()
 	std::string str2 = "World";
 	std::string str3 = "Ahahhaha";
 	std::string str4 = "blabla";
+
+	for (int i = 0; i < 150000; ++i) {
+		table.insert(i, std::to_string(i));
+	}
+	table.print();
+	std::cout << "============\n";
+	table.changeHash(new FirstHashFunction);
+	table.print();
+	std::cout << "============\n";
+	table.changeHash(new SecondHashFunction);
+	table.print();
+	std::cout << "============\n";
+	table.changeHash(new FirstHashFunction);
+	table.print();
+	std::cout << "============\n";
+	return 0;
 	table.insert(5, str1);
 	table.insert(5, str2);
 	table.insert(5, str3);
