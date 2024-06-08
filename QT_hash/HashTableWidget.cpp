@@ -46,7 +46,7 @@ void HashTableWidget::addRow(int key, const QString &value)
         m_items[row].ptr->setValue(value);
         if(m_hashTable.m_table[row]->m_prev)
         {
-            addConnection(m_hashTable._findIndex(m_hashTable.m_table[row]->m_prev) ,row);
+            addConnection(m_hashTable._findIndex(m_hashTable.m_table[row]->m_prev), row);
         }
         update();
     }
@@ -73,44 +73,45 @@ bool HashTableWidget::removeRow(int key)
             {
                 m_items[row].ptr->emptyKey();
                 m_items[row].ptr->setValue("");
-                removeConnections(row);
+                m_items[row].prev = nullptr;
+                m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
             }
             else if(m_items[row].next)
             {
-                ItemData* tmp = &m_items[row];
-                while(tmp->next && tmp->ptr->value() != "")
+                ItemData tmp = m_items[row];
+                while(tmp.next && tmp.ptr->value() != "")
                 {
-                    tmp->ptr->setKey(tmp->next->key());
-                    tmp->ptr->setValue(tmp->next->value());
-                    removeConnections(row);
+                    tmp.ptr->setKey(tmp.next->key());
+                    tmp.ptr->setValue(tmp.next->value());
                     row = oldTable._findIndex(oldTable.m_table[row]->m_next);
-                    tmp = &tmp[row];
+                    tmp = m_items[row];
                 }
-                tmp->ptr->emptyKey();
-                tmp->ptr->setValue("");
-                removeConnections(row);
+                tmp.ptr->emptyKey();
+                tmp.ptr->setValue("");
+                m_items[row].prev = nullptr;
+                m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
             }
             update();
         }
         else
         {
-            ItemData* tmp = &m_items[row];
-            while(tmp->ptr->key() != key)
+            ItemData tmp = m_items[row];
+            while(tmp.ptr->key() != key)
             {
                 row = oldTable._findIndex(oldTable.m_table[row]->m_next);
-                tmp = &tmp[row];
+                tmp = m_items[row];
             }
-            while(tmp->next && tmp->ptr->value() != "")
+            while(tmp.next && tmp.ptr->value() != "")
             {
-                tmp->ptr->setKey(tmp->next->key());
-                tmp->ptr->setValue(tmp->next->value());
-                removeConnections(row);
+                tmp.ptr->setKey(tmp.next->key());
+                tmp.ptr->setValue(tmp.next->value());
                 row = oldTable._findIndex(oldTable.m_table[row]->m_next);
-                tmp = &tmp[row];
+                tmp = m_items[row];
             }
-            tmp->ptr->emptyKey();
-            tmp->ptr->setValue("");
-            removeConnections(row);
+            tmp.ptr->emptyKey();
+            tmp.ptr->setValue("");
+            m_items[row].prev = nullptr;
+            m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
             update();
         }
     }
@@ -174,6 +175,7 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
 void HashTableWidget::addConnection(int from, int to)
 {
     m_items[from].next = m_items[to].ptr;
+    m_items[to].prev = m_items[from].ptr;
 }
 
 void HashTableWidget::removeConnections(int itemIndex)
