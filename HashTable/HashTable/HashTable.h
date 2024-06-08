@@ -6,6 +6,7 @@
 class IHashFunction
 {
 public:
+	virtual ~IHashFunction() = default;
 	virtual int hash(const int key, const int tableSize) const = 0;
 	virtual IHashFunction* _clone() = 0;
 };
@@ -13,6 +14,7 @@ public:
 class FirstHashFunction : public IHashFunction
 {
 public:
+	~FirstHashFunction() override = default;
 	int hash(const int key, const int tableSize) const override;
 	IHashFunction* _clone() override;
 private:
@@ -23,6 +25,7 @@ private:
 class SecondHashFunction : public IHashFunction
 {
 public:
+	~SecondHashFunction() override = default;
 	int hash(const int key, const int tableSize) const override;
 	IHashFunction* _clone() override;
 };
@@ -31,6 +34,8 @@ class HashTable
 {
 private:
 	struct TableElement;
+public:
+	friend class HashTableWidget;
 public:
 	HashTable();
 	HashTable(IHashFunction* hashFunction, int capacity);
@@ -46,6 +51,7 @@ public:
 	TableElement* _findElement(const int key) const;
 	std::string& operator[](const int key);
 	HashTable& operator=(const HashTable& other);
+	int _findIndex(int key)const;
 private:
 	int _findIndex(TableElement* element) const;
 	bool _isFilled() const;

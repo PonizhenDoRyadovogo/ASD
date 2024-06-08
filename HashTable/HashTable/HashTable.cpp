@@ -1,6 +1,7 @@
 #include<iostream>
 #include<assert.h>
 #include<utility>
+#include<math.h>
 
 #include "HashTable.h"
 
@@ -54,8 +55,12 @@ HashTable::HashTable(const HashTable& other)
 		tmp.m_table[i]->m_hasValue = other.m_table[i]->m_hasValue;
 		tmp.m_table[i]->m_key = other.m_table[i]->m_key;
 		tmp.m_table[i]->m_str = other.m_table[i]->m_str;
-		tmp.m_table[i]->m_next = other.m_table[i]->m_next ? tmp.m_table[other._findIndex(other.m_table[i]->m_next)] : nullptr;
-		tmp.m_table[i]->m_prev = other.m_table[i]->m_prev ? tmp.m_table[other._findIndex(other.m_table[i]->m_prev)] : nullptr;
+		tmp.m_table[i]->m_next = other.m_table[i]->m_next 
+			? tmp.m_table[other._findIndex(other.m_table[i]->m_next)] 
+			: nullptr;
+		tmp.m_table[i]->m_prev = other.m_table[i]->m_prev 
+			? tmp.m_table[other._findIndex(other.m_table[i]->m_prev)] 
+			: nullptr;
 	}
 	std::swap(m_table, tmp.m_table);
 }
@@ -100,16 +105,19 @@ bool HashTable::insert(const int key, const std::string& str)
 				tmp = tmp->m_next;
 				i = _findIndex(tmp);
 			}
-			for (int j = 0; j < m_capacity; ++j)
+            if (i >= 0)
 			{
-				if (!m_table[j]->m_hasValue)
+				for (int j = 0; j < m_capacity; ++j)
 				{
-					m_table[j]->m_key = key;
-					m_table[j]->m_hasValue = true;
-					m_table[j]->m_str = str;
-					m_table[i]->m_next = &(*m_table[j]);
-					m_table[j]->m_prev = &(*m_table[i]);
-					return true;
+					if (!m_table[j]->m_hasValue)
+					{
+						m_table[j]->m_key = key;
+						m_table[j]->m_hasValue = true;
+						m_table[j]->m_str = str;
+						m_table[i]->m_next = &(*m_table[j]);
+						m_table[j]->m_prev = &(*m_table[i]);
+						return true;
+					}
 				}
 			}
 		}
@@ -129,6 +137,7 @@ bool HashTable::insert(const int key, const std::string& str)
 			}
 		}
 	}
+	return false;
 }
 
 bool HashTable::erase(const int key)
@@ -320,6 +329,19 @@ int HashTable::_findIndex(TableElement* element) const
 			return i;
 		}
 	}
+	return -1;
+}
+
+int HashTable::_findIndex(int key)const
+{
+	for (int i = 0; i < m_capacity; ++i)
+	{
+		if (m_table[i]->m_hasValue && m_table[i]->m_key == key)
+		{
+			return i;
+		}
+	}
+	return -1;
 }
 
 std::string& HashTable::operator[](const int key)
