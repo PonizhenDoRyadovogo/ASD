@@ -171,7 +171,11 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
                 painter.drawLine(item.connectionRect.topLeft(), item.connectionRect.topRight());
                 painter.drawLine(item.connectionRect.topRight(), item.connectionRect.bottomRight());
                 painter.drawLine(item.connectionRect.bottomRight(), item.connectionRect.bottomLeft());
-                //TODO: draw arrow
+                //draw arrow
+                painter.drawLine(item.connectionRect.bottomLeft().rx(), item.connectionRect.bottomLeft().ry(),
+                                item.connectionRect.bottomRight().rx(), item.connectionRect.bottomRight().ry() - 5);
+                painter.drawLine(item.connectionRect.bottomLeft().rx(), item.connectionRect.bottomLeft().ry(),
+                                 item.connectionRect.bottomRight().rx(), item.connectionRect.bottomRight().ry() + 5);
             }
         }
     }
