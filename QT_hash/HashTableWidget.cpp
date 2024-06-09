@@ -1,4 +1,3 @@
-
 #include <QDebug>
 #include <QGridLayout>
 #include <QPainter>
@@ -28,11 +27,12 @@ HashTableWidget::~HashTableWidget()
 }
 
 
-int HashTableWidget::findRow(int key) const
+void HashTableWidget::findRow(int key)
 {
-    //TODO: implement
-    return -1; //return m_hashTable.findRow(key);
+    m_targetCell = findCell(key);
+    update();
 }
+
 void HashTableWidget::addRow(int key, const QString &value)
 {
     if (!m_items.size())
@@ -140,8 +140,14 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 
     QPainter painter(this);
-
     for (ItemData &item : m_items) {
+        if(m_targetCell && m_targetCell->value() == item.ptr->value())
+        {
+            painter.fillRect(item.ptr->x(), item.ptr->y(), item.ptr->width(), item.ptr->height(), Qt::red);
+            QWidget::paintEvent(event);
+            m_targetCell = nullptr;
+        }
+
         if (item.next) {
             item.connectionRect = item.baseConnectionRect(m_baseConnectionOffset);
 
@@ -170,6 +176,43 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
         }
     }
     //TODO: resize widget / layout
+}
+
+HashTableCellWidget* HashTableWidget::findCell(const int key) const
+{
+    int row = m_hashTable.m_hashFunction->hash(key, m_hashTable.capacity());
+    if(m_hashTable.m_table[row]->m_hasValue)
+    {
+        if(m_items[row].ptr->key() == key)
+        {
+            return m_items[row].ptr;
+        }
+        else
+        {
+            if(m_items[row].next)
+            {
+                ItemData tmp = m_items[row];
+                while(tmp.next)
+                {
+                    row = m_hashTable._findIndex(m_hashTable.m_table[row]->m_next);
+                    tmp = m_items[row];
+                    if(tmp.ptr->key() == key)
+                    {
+                        return tmp.ptr;
+                    }
+                }
+                return nullptr;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 void HashTableWidget::addConnection(int from, int to)

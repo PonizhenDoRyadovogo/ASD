@@ -16,7 +16,7 @@ public:
     explicit HashTableWidget(QWidget *parent = nullptr);
     ~HashTableWidget();
 
-    int findRow(int key) const;
+    void findRow(int key);
 
 public slots:
     void addRow(int key, const QString &value);
@@ -25,7 +25,8 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-
+private:
+    HashTableCellWidget* findCell(const int key) const;
 private slots:
     void addConnection(int from, int to);
     void removeConnections(int itemIndex);
@@ -48,5 +49,6 @@ private:
     int m_baseConnectionOffset = 10;
     int m_connectionOffset = 5;
     HashTable m_hashTable;
+    HashTableCellWidget* m_targetCell = nullptr;
 };
 
