@@ -22,11 +22,6 @@ HashTableWidget::HashTableWidget(QWidget *parent)
     m_layout->setContentsMargins(margins);
 }
 
-HashTableWidget::~HashTableWidget()
-{
-}
-
-
 void HashTableWidget::findRow(int key)
 {
     m_targetCell = findCell(key);
@@ -44,6 +39,7 @@ void HashTableWidget::addRow(int key, const QString &value)
         int row = m_hashTable._findIndex(key);
         m_items[row].ptr->setKey(key);
         m_items[row].ptr->setValue(value);
+        m_items[row].ptr->setEditable(true);
         if(m_hashTable.m_table[row]->m_prev)
         {
             addConnection(m_hashTable._findIndex(m_hashTable.m_table[row]->m_prev), row);
@@ -68,6 +64,7 @@ bool HashTableWidget::removeRow(int key)
             {
                 m_items[row].ptr->emptyKey();
                 m_items[row].ptr->setValue("");
+                m_items[row].ptr->setEditable(false);
             }
             else if(m_items[row].prev && !m_items[row].next)
             {
@@ -75,6 +72,7 @@ bool HashTableWidget::removeRow(int key)
                 m_items[row].ptr->setValue("");
                 m_items[row].prev = nullptr;
                 m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
+                m_items[row].ptr->setEditable(false);
             }
             else if(m_items[row].next)
             {
@@ -90,6 +88,7 @@ bool HashTableWidget::removeRow(int key)
                 tmp.ptr->setValue("");
                 m_items[row].prev = nullptr;
                 m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
+                m_items[row].ptr->setEditable(false);
             }
             update();
         }
@@ -112,6 +111,7 @@ bool HashTableWidget::removeRow(int key)
             tmp.ptr->setValue("");
             m_items[row].prev = nullptr;
             m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
+            m_items[row].ptr->setEditable(false);
             update();
         }
     }
@@ -129,7 +129,6 @@ void HashTableWidget::resize(int size)
     m_items.resize(size);
     for (int i = oldSize; i < size; ++i) {
         m_items[i].ptr = new HashTableCellWidget(this);
-        //TODO: make empty rows uneditable by default
         connect(m_items[i].ptr, &HashTableCellWidget::valueChanged, this, &HashTableWidget::onValueChanged);
         m_layout->addWidget(m_items[i].ptr, i, 0);
     }

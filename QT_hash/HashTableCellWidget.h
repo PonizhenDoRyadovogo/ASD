@@ -16,7 +16,7 @@ public:
 
     int key() const;
     QString value() const;
-
+    void setEditable(bool editable);
 public slots:
     void setKey(int key);
     void setValue(const QString &value);
@@ -26,5 +26,6 @@ signals:
 
 private:
     Ui::HashTableCellWidget *ui;
+    bool m_editable = false;
 };
 

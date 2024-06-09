@@ -14,7 +14,7 @@ class HashTableWidget : public QWidget
 
 public:
     explicit HashTableWidget(QWidget *parent = nullptr);
-    ~HashTableWidget();
+    ~HashTableWidget() = default;
 
     void findRow(int key);
 
