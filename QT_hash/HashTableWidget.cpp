@@ -118,20 +118,57 @@ bool HashTableWidget::removeRow(int key)
     return true;
 }
 
-void HashTableWidget::resize(int size)
+void HashTableWidget::resize(int newSize)
 {
-    //TODO: implement
-    int oldSize = m_items.size(); //= m_hashTable.capacity();
-    for (int i = oldSize - 1; i >= size; --i) {
-        delete m_items[i].ptr;
+    if(m_items.size() == newSize)
+    {
+        return;
     }
-
-    m_items.resize(size);
-    for (int i = oldSize; i < size; ++i) {
+    //int oldSize = m_items.size();
+    QVector<ItemData> oldTable(m_items.size());
+    qSwap(m_items, oldTable);
+    m_items.resize(newSize);
+    for(int i = 0; i < newSize; ++i)
+    {
         m_items[i].ptr = new HashTableCellWidget(this);
         connect(m_items[i].ptr, &HashTableCellWidget::valueChanged, this, &HashTableWidget::onValueChanged);
         m_layout->addWidget(m_items[i].ptr, i, 0);
     }
+    m_hashTable.resize(newSize);
+    for(int i = 0; i < oldTable.size(); ++i)
+    {
+        if(oldTable[i].ptr->value() != "")
+        {
+            int row = m_hashTable._findIndex(oldTable[i].ptr->key());
+            m_items[row].ptr->setKey(oldTable[i].ptr->key());
+            m_items[row].ptr->setValue(oldTable[i].ptr->value());
+            m_items[row].ptr->setEditable(true);
+            if(m_hashTable.m_table[row]->m_prev)
+            {
+                addConnection(m_hashTable._findIndex(m_hashTable.m_table[row]->m_prev), row);
+            }
+        }
+        delete oldTable[i].ptr;
+    }
+    update();
+
+
+    //TODO: implement
+    //int oldSize = m_items.size();
+//    for (int i = oldSize - 1; i >= newSize; --i) {
+//        delete m_items[i].ptr;
+//    }
+//    m_items.resize(newSize);
+//    for (int i = oldSize; i < newSize; ++i) {
+//        m_items[i].ptr = new HashTableCellWidget(this);
+//        connect(m_items[i].ptr, &HashTableCellWidget::valueChanged, this, &HashTableWidget::onValueChanged);
+//        m_layout->addWidget(m_items[i].ptr, i, 0);
+//    }
+
+//    for(int i = 0; i < newSize; ++i)
+//    {
+//        if()
+//    }
 }
 
 void HashTableWidget::paintEvent(QPaintEvent *event)

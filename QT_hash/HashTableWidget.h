@@ -21,7 +21,7 @@ public:
 public slots:
     void addRow(int key, const QString &value);
     bool removeRow(int key);
-    void resize(int size);
+    void resize(int newSize);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
