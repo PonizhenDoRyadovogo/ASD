@@ -17,7 +17,6 @@ public:
     ~HashTableWidget() = default;
 
     void findRow(int key);
-
 public slots:
     void addRow(int key, const QString &value);
     bool removeRow(int key);
@@ -47,8 +46,9 @@ private:
     QVector<ItemData> m_items;
     QGridLayout *m_layout = nullptr;
     int m_baseConnectionOffset = 10;
-    int m_connectionOffset = 5;
+    int m_connectionOffset = 10;
     HashTable m_hashTable;
     HashTableCellWidget* m_targetCell = nullptr;
+    int m_maxRight = 0;
 };
 
