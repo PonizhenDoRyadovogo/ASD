@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QVBoxLayout>
+#include <QSound>
 
 #include "HashTableCellWidget.h"
 
@@ -31,6 +32,7 @@ void HashTableWidget::addRow(int key, const QString &value)
     }
     if(m_hashTable.insert(key, value.toStdString()))
     {
+        QSound::play("C:/Users/User/Downloads/add.wav");
         int row = m_hashTable._findIndex(key);
         m_items[row].ptr->setKey(key);
         m_items[row].ptr->setValue(value);
@@ -60,6 +62,10 @@ bool HashTableWidget::removeRow(int key)
                 m_items[row].ptr->emptyKey();
                 m_items[row].ptr->setValue("");
                 m_items[row].ptr->setEditable(false);
+                if(m_items[row].ptr == m_targetCell)
+                {
+                    m_targetCell = nullptr;
+                }
             }
             else if(m_items[row].prev && !m_items[row].next)
             {
@@ -68,12 +74,24 @@ bool HashTableWidget::removeRow(int key)
                 m_items[row].prev = nullptr;
                 m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
                 m_items[row].ptr->setEditable(false);
+                if(m_items[row].ptr == m_targetCell)
+                {
+                    m_targetCell = nullptr;
+                }
             }
             else if(m_items[row].next)
             {
+                if(m_items[row].ptr == m_targetCell)
+                {
+                    m_targetCell = nullptr;
+                }
                 ItemData tmp = m_items[row];
                 while(tmp.next && tmp.ptr->value() != "")
                 {
+                    if(tmp.ptr == m_targetCell)
+                    {
+                        m_targetCell = nullptr;
+                    }
                     tmp.ptr->setKey(tmp.next->key());
                     tmp.ptr->setValue(tmp.next->value());
                     row = oldTable._findIndex(oldTable.m_table[row]->m_next);
@@ -109,8 +127,12 @@ bool HashTableWidget::removeRow(int key)
             m_items[row].ptr->setEditable(false);
             update();
         }
+        return true;
     }
-    return true;
+    else
+    {
+        return false;
+    }
 }
 
 void HashTableWidget::resize(int newSize)
@@ -161,7 +183,6 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
         {
             painter.fillRect(item.ptr->x(), item.ptr->y(), item.ptr->width() + 5, item.ptr->height(), Qt::red);
             QWidget::paintEvent(event);
-           // m_targetCell = nullptr;
         }
 
         if (item.next) {
@@ -173,10 +194,6 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
                 if (&other == &item) {
                     continue;
                 }
-//                if(!other.connectionRect.isValid())
-//                {
-//                    continue;
-//                }
                 if (other.connectionRect.intersects(item.connectionRect)) {
                     rightBorders.append(other.connectionRect.right());
                     while (rightBorders.contains(item.connectionRect.right() + rightBorderOffset)) {
@@ -193,30 +210,19 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
                 painter.drawLine(item.connectionRect.bottomRight(), item.connectionRect.bottomLeft());
                 //draw arrow
                 painter.drawLine(item.connectionRect.bottomLeft().rx(), item.connectionRect.bottomLeft().ry(),
-                                item.connectionRect.bottomRight().rx(), item.connectionRect.bottomRight().ry() - 5);
+                                item.connectionRect.bottomLeft().rx() + 5, item.connectionRect.bottomLeft().ry() - 5);
                 painter.drawLine(item.connectionRect.bottomLeft().rx(), item.connectionRect.bottomLeft().ry(),
-                                 item.connectionRect.bottomRight().rx(), item.connectionRect.bottomRight().ry() + 5);
+                                 item.connectionRect.bottomLeft().rx() + 5, item.connectionRect.bottomLeft().ry() + 5);
             }
         }
     }
 
     if(oldMaxRight < m_maxRight)
     {
-        qDebug() << "maxRight:" << m_maxRight;
         QMargins margins = m_layout->contentsMargins();
-        qDebug() << "margins:" << margins;
-        qDebug() << "width:" << width();
         margins.setRight(m_maxRight - width() + 15);
         m_layout->setContentsMargins(margins);
     }
-    //TODO: resize widget / layout
-    //    QMargins margins = m_layout->contentsMargins();
-    //    //TODO: margin recalculating to fit all connections
-    //    if((margins.right() - 15) < (margins.right() - 15 + maxRight))
-    //    {
-    //        margins.setRight(margins.right() + maxRight);
-    //        m_layout->setContentsMargins(margins);
-    //    }
 }
 
 HashTableCellWidget* HashTableWidget::findCell(const int key) const
