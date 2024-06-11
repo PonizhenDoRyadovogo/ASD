@@ -59,9 +59,7 @@ bool HashTableWidget::removeRow(int key)
         {
             if(!m_items[row].next && !m_items[row].prev)
             {
-                m_items[row].ptr->emptyKey();
-                m_items[row].ptr->setValue("");
-                m_items[row].ptr->setEditable(false);
+                setEmpty(m_items[row].ptr);
                 if(m_items[row].ptr == m_targetCell)
                 {
                     m_targetCell = nullptr;
@@ -69,11 +67,9 @@ bool HashTableWidget::removeRow(int key)
             }
             else if(m_items[row].prev && !m_items[row].next)
             {
-                m_items[row].ptr->emptyKey();
-                m_items[row].ptr->setValue("");
+                setEmpty(m_items[row].ptr);
                 m_items[row].prev = nullptr;
                 m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
-                m_items[row].ptr->setEditable(false);
                 if(m_items[row].ptr == m_targetCell)
                 {
                     m_targetCell = nullptr;
@@ -97,11 +93,9 @@ bool HashTableWidget::removeRow(int key)
                         m_targetCell = tmp.prev;
                     }
                 }
-                tmp.ptr->emptyKey();
-                tmp.ptr->setValue("");
+                setEmpty(m_items[row].ptr);
                 m_items[row].prev = nullptr;
                 m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
-                m_items[row].ptr->setEditable(false);
             }
             update();
         }
@@ -120,11 +114,9 @@ bool HashTableWidget::removeRow(int key)
                 row = oldTable._findIndex(oldTable.m_table[row]->m_next);
                 tmp = m_items[row];
             }
-            tmp.ptr->emptyKey();
-            tmp.ptr->setValue("");
+            setEmpty(m_items[row].ptr);
             m_items[row].prev = nullptr;
             m_items[oldTable._findIndex(oldTable.m_table[row]->m_prev)].next = nullptr;
-            m_items[row].ptr->setEditable(false);
             update();
         }
         return true;
@@ -260,6 +252,13 @@ HashTableCellWidget* HashTableWidget::findCell(const int key) const
     {
         return nullptr;
     }
+}
+
+void HashTableWidget::setEmpty(HashTableCellWidget* cell)
+{
+    cell->emptyKey();
+    cell->setValue("");
+    cell->setEditable(false);
 }
 
 void HashTableWidget::addConnection(int from, int to)

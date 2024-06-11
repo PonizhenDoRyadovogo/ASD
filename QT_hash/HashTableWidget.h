@@ -26,6 +26,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 private:
     HashTableCellWidget* findCell(const int key) const;
+    void setEmpty(HashTableCellWidget* cell);
 private slots:
     void addConnection(int from, int to);
     void removeConnections(int itemIndex);
