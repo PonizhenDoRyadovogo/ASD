@@ -133,7 +133,6 @@ void HashTableWidget::resize(int newSize)
     {
         return;
     }
-    //int oldSize = m_items.size();
     QVector<ItemData> oldTable(m_items.size());
     qSwap(m_items, oldTable);
     m_items.resize(newSize);
@@ -157,6 +156,17 @@ void HashTableWidget::resize(int newSize)
                 if(m_hashTable.m_table[row]->m_prev)
                 {
                     addConnection(m_hashTable._findIndex(m_hashTable.m_table[row]->m_prev), row);
+                }
+                if(oldTable[i].ptr == m_targetCell)
+                {
+                    m_targetCell = m_items[row].ptr;
+                }
+            }
+            else
+            {
+                if(oldTable[i].ptr == m_targetCell)
+                {
+                    m_targetCell = nullptr;
                 }
             }
         }
