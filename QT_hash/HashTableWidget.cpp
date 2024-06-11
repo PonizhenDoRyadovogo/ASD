@@ -88,14 +88,14 @@ bool HashTableWidget::removeRow(int key)
                 ItemData tmp = m_items[row];
                 while(tmp.next && tmp.ptr->value() != "")
                 {
-                    if(tmp.ptr == m_targetCell)
-                    {
-                        m_targetCell = nullptr;
-                    }
                     tmp.ptr->setKey(tmp.next->key());
                     tmp.ptr->setValue(tmp.next->value());
                     row = oldTable._findIndex(oldTable.m_table[row]->m_next);
                     tmp = m_items[row];
+                    if(tmp.ptr == m_targetCell)
+                    {
+                        m_targetCell = tmp.prev;
+                    }
                 }
                 tmp.ptr->emptyKey();
                 tmp.ptr->setValue("");
@@ -181,7 +181,7 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
     for (ItemData &item : m_items) {
         if(m_targetCell && m_targetCell->value() == item.ptr->value())
         {
-            painter.fillRect(item.ptr->x(), item.ptr->y(), item.ptr->width() + 5, item.ptr->height(), Qt::red);
+            painter.fillRect(item.ptr->x(), item.ptr->y(), item.ptr->width(), item.ptr->height(), Qt::red);
             QWidget::paintEvent(event);
         }
 
@@ -220,7 +220,7 @@ void HashTableWidget::paintEvent(QPaintEvent *event)
     if(oldMaxRight < m_maxRight)
     {
         QMargins margins = m_layout->contentsMargins();
-        margins.setRight(m_maxRight - width() + 15);
+        margins.setRight(m_maxRight - width() + 20);
         m_layout->setContentsMargins(margins);
     }
 }
